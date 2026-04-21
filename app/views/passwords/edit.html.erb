@@ -1,0 +1,47 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "auth" %>
+<% end %>
+
+<div class="auth-page">
+  <div class="auth-card">
+
+    <div class="auth-brand">
+      <div class="auth-brand-mark"></div>
+      <span class="auth-brand-name">Plataform GVI</span>
+    </div>
+
+    <div class="auth-header">
+      <h1 class="auth-title">Nova senha</h1>
+      <p class="auth-subtitle">Escolha uma senha forte para proteger sua conta.</p>
+    </div>
+
+    <% if flash[:alert] %>
+      <div class="auth-flash auth-flash--error"><%= flash[:alert] %></div>
+    <% end %>
+
+    <%= form_with url: password_path(params[:token]), method: :put, html: { class: "auth-form" } do |form| %>
+      <div class="auth-field">
+        <%= form.label :password, "Nova senha", class: "auth-label" %>
+        <%= form.password_field :password,
+              required: true,
+              autocomplete: "new-password",
+              placeholder: "••••••••",
+              maxlength: 72,
+              class: "auth-input" %>
+      </div>
+
+      <div class="auth-field">
+        <%= form.label :password_confirmation, "Confirmar senha", class: "auth-label" %>
+        <%= form.password_field :password_confirmation,
+              required: true,
+              autocomplete: "new-password",
+              placeholder: "••••••••",
+              maxlength: 72,
+              class: "auth-input" %>
+      </div>
+
+      <%= form.submit "Salvar senha", class: "auth-btn" %>
+    <% end %>
+
+  </div>
+</div>
