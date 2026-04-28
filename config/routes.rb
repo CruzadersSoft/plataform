@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   namespace :platform do
     root "dashboard#show"
+    resources :churches, except: :destroy
   end
 
   get "home/index"

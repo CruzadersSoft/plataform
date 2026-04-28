@@ -1,0 +1,42 @@
+<main class="container py-5" id="conteudo-principal">
+  <%= render "shared/flash" %>
+
+  <header class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
+    <div>
+      <p class="text-secondary mb-1">Platform Admin</p>
+      <h1 class="h3 mb-1">Igrejas</h1>
+      <p class="text-secondary mb-0">Tenants cadastrados na plataforma.</p>
+    </div>
+
+    <%= link_to "Nova igreja", new_platform_church_path, class: "btn btn-primary" %>
+  </header>
+
+  <section class="card">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th scope="col">Nome</th>
+            <th scope="col">Slug</th>
+            <th scope="col">Status</th>
+            <th scope="col">Fuso horario</th>
+            <th scope="col" class="text-end">Acoes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @churches.each do |church| %>
+            <tr data-testid="church-row">
+              <td><%= link_to church.name, platform_church_path(church), class: "fw-semibold" %></td>
+              <td><%= church.slug %></td>
+              <td><span class="badge text-bg-secondary"><%= church.status.humanize %></span></td>
+              <td><%= church.timezone %></td>
+              <td class="text-end">
+                <%= link_to "Editar", edit_platform_church_path(church), class: "btn btn-sm btn-outline-primary" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>

@@ -46,6 +46,8 @@ class ApplicationController < ActionController::Base
       return if controller_name == "current_churches"
       return if controller_name.in?(%w[sessions users passwords])
 
+      return redirect_to platform_root_path if Current.user.platform_admin?
+
       redirect_to onboarding_path
     end
 
