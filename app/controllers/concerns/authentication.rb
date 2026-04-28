@@ -47,6 +47,8 @@ module Authentication
 
     def terminate_session
       Current.session.destroy
+      session.delete(:church_id)
+      Current.reset
       cookies.delete(:session_id)
     end
 end

@@ -8,8 +8,15 @@ module SessionTestHelper
     end
   end
 
+  def sign_in_to_church_as(user, church)
+    sign_in_as(user)
+    patch current_church_path, params: { church_id: church.id }
+  end
+
   def sign_out
     Current.session&.destroy!
+    Current.church = nil
+    Current.church_membership = nil
     cookies.delete("session_id")
   end
 end

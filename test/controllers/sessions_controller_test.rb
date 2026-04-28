@@ -30,4 +30,18 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_session_path
     assert_empty cookies[:session_id]
   end
+
+  test "destroy clears active church from browser session" do
+    sign_in_to_church_as users(:one), churches(:grace)
+
+    delete session_path
+
+    assert_redirected_to new_session_path
+
+    post session_path, params: { email_address: users(:one).email_address, password: "password" }
+    assert_redirected_to root_path
+
+    follow_redirect!
+    assert_redirected_to onboarding_path
+  end
 end

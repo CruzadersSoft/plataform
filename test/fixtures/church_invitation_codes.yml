@@ -1,0 +1,14 @@
+grace_volunteer:
+  church: grace
+  code: GRACE-123
+  church_role: volunteer
+  status: active
+  created_by: one
+
+expired:
+  church: grace
+  code: OLD-123
+  church_role: volunteer
+  status: active
+  expires_at: <%= 1.day.ago %>
+  created_by: one

@@ -3,8 +3,8 @@
     <div class="app-brand">
       <div class="app-brand-mark" aria-hidden="true">G</div>
       <div>
-        <div class="app-brand-name">Plataform GVI</div>
-        <div class="app-brand-subtitle">Organização simples do dia a dia</div>
+        <div class="app-brand-name"><%= @church.name %></div>
+        <div class="app-brand-subtitle">Painel da igreja</div>
       </div>
     </div>
 
@@ -22,7 +22,7 @@
 
   <main class="app-main" id="conteudo-principal">
     <div class="app-topbar">
-      <span class="badge text-bg-success rounded-pill">Sistema ativo</span>
+      <span class="badge text-bg-success rounded-pill"><%= @church.status.humanize %></span>
       <%= button_to "Sair", session_path, method: :delete, class: "btn btn-link text-muted text-decoration-none p-0" %>
     </div>
 
@@ -30,33 +30,51 @@
 
     <header class="page-header" id="visao-geral">
       <div>
-        <p class="page-eyebrow">Início</p>
-        <h1 class="page-title">Sistema pronto para começar</h1>
+        <p class="page-eyebrow">Painel da igreja</p>
+        <h1 class="page-title"><%= @church.name %></h1>
         <p class="page-description">
-          Como o projeto ainda tem apenas o registro de usuário, esta tela fica propositalmente simples até existirem módulos reais para acompanhar.
+          Este painel esta conectado ao tenant ativo e sera a base dos modulos operacionais da igreja.
         </p>
       </div>
 
       <div>
-        <%= link_to "Criar usuário", new_user_path, class: "btn btn-primary" %>
+        <span class="badge text-bg-primary rounded-pill" data-testid="current-church-role"><%= @membership.church_role %></span>
       </div>
     </header>
 
     <section class="card" id="proximos-passos">
       <div class="card-body">
-        <h2 class="card-title h5">Próximos passos</h2>
-        <p class="card-text text-secondary">A interface pode crescer junto com o produto, sem inventar dados ou fluxos antes da hora.</p>
+        <h2 class="card-title h5">Dados da igreja</h2>
+        <p class="card-text text-secondary">Informacoes basicas do tenant ativo nesta sessao.</p>
+
+        <dl class="row mb-0">
+          <dt class="col-sm-3">Slug</dt>
+          <dd class="col-sm-9" data-testid="current-church-slug"><%= @church.slug %></dd>
+
+          <dt class="col-sm-3">Fuso horario</dt>
+          <dd class="col-sm-9"><%= @church.timezone %></dd>
+
+          <dt class="col-sm-3">Papel</dt>
+          <dd class="col-sm-9"><%= @membership.church_role.humanize %></dd>
+        </dl>
+
+        <% if @invitation_code.present? %>
+          <div class="alert alert-success mt-4" role="note">
+            <div class="fw-semibold">Codigo para entrar na igreja</div>
+            <div class="fs-4 fw-bold mt-1" data-testid="church-invitation-code"><%= @invitation_code.code %></div>
+            <div class="text-secondary mt-1">Compartilhe este codigo com quem deve entrar como voluntario.</div>
+          </div>
+        <% end %>
 
         <div class="alert alert-primary d-flex align-items-start gap-3 mt-3" role="note">
           <span aria-hidden="true">ℹ</span>
           <div>
-            <strong>Nenhum dashboard por enquanto</strong>
-            <div class="mt-1 text-secondary">Quando existirem módulos como membros, eventos ou relatórios, esta página pode virar um painel de acompanhamento.</div>
+            <strong>Dashboard inicial</strong>
+            <div class="mt-1 text-secondary">Os proximos cards devem nascer dos modulos reais: membros, departamentos, eventos e escalas.</div>
           </div>
         </div>
 
         <div class="d-flex gap-2 mt-4">
-          <%= link_to "Criar usuário", new_user_path, class: "btn btn-primary" %>
           <%= button_to "Sair", session_path, method: :delete, class: "btn btn-outline-secondary" %>
         </div>
       </div>
