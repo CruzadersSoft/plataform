@@ -1,47 +1,49 @@
-<% content_for :head do %>
-  <%= stylesheet_link_tag "auth" %>
-<% end %>
+<% content_for :body_class, "auth-screen" %>
 
 <div class="auth-page">
-  <div class="auth-card">
+  <div class="auth-card card shadow-sm">
+    <div class="card-body p-4">
 
-    <div class="auth-brand">
-      <div class="auth-brand-mark"></div>
-      <span class="auth-brand-name">Plataform GVI</span>
-    </div>
-
-    <div class="auth-header">
-      <h1 class="auth-title">Nova senha</h1>
-      <p class="auth-subtitle">Escolha uma senha forte para proteger sua conta.</p>
-    </div>
-
-    <% if flash[:alert] %>
-      <div class="auth-flash auth-flash--error"><%= flash[:alert] %></div>
-    <% end %>
-
-    <%= form_with url: password_path(params[:token]), method: :put, html: { class: "auth-form" } do |form| %>
-      <div class="auth-field">
-        <%= form.label :password, "Nova senha", class: "auth-label" %>
-        <%= form.password_field :password,
-              required: true,
-              autocomplete: "new-password",
-              placeholder: "••••••••",
-              maxlength: 72,
-              class: "auth-input" %>
+      <div class="auth-brand">
+        <div class="auth-brand-mark"></div>
+        <span class="auth-brand-name">Plataform GVI</span>
       </div>
 
-      <div class="auth-field">
-        <%= form.label :password_confirmation, "Confirmar senha", class: "auth-label" %>
-        <%= form.password_field :password_confirmation,
-              required: true,
-              autocomplete: "new-password",
-              placeholder: "••••••••",
-              maxlength: 72,
-              class: "auth-input" %>
+      <div class="auth-header">
+        <h1 class="auth-title">Nova senha</h1>
+        <p class="auth-subtitle">Escolha uma nova senha para voltar a acessar sua conta com segurança.</p>
       </div>
 
-      <%= form.submit "Salvar senha", class: "auth-btn" %>
-    <% end %>
+      <% if flash[:alert] %>
+        <div class="alert alert-danger" role="alert"><%= flash[:alert] %></div>
+      <% end %>
 
+      <%= form_with url: password_path(params[:token]), method: :put, html: { class: "auth-form" } do |form| %>
+        <div>
+          <%= form.label :password, "Nova senha", class: "form-label" %>
+          <%= form.password_field :password,
+                required: true,
+                autocomplete: "new-password",
+                placeholder: "••••••••",
+                maxlength: 72,
+                class: "form-control" %>
+          <div class="form-text">Use pelo menos 8 caracteres para maior segurança.</div>
+        </div>
+
+        <div>
+          <%= form.label :password_confirmation, "Confirmar senha", class: "form-label" %>
+          <%= form.password_field :password_confirmation,
+                required: true,
+                autocomplete: "new-password",
+                placeholder: "••••••••",
+                maxlength: 72,
+                class: "form-control" %>
+          <div class="form-text">Repita a nova senha para confirmar.</div>
+        </div>
+
+        <%= form.submit "Salvar senha", class: "btn btn-primary w-100" %>
+      <% end %>
+
+    </div>
   </div>
 </div>

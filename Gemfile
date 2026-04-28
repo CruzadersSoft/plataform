@@ -10,6 +10,10 @@ gem "sqlite3", ">= 2.1"
 gem "puma", ">= 5.0"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
+# Sass compiler for the asset pipeline [https://github.com/rails/dartsass-rails]
+gem "dartsass-rails"
+# Bootstrap CSS framework [https://github.com/twbs/bootstrap-rubygem]
+gem "bootstrap", "~> 5.3"
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "turbo-rails"
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]

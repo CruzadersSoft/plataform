@@ -1,4 +1,76 @@
-<h1>Bem-vindo. O que deseja fazer?</h1>
-<p>Criar um sistema para igreja</p>
-<p>Entrar com código</p>
+<div class="app-shell">
+  <aside class="app-sidebar" aria-label="Menu principal">
+    <div class="app-brand">
+      <div class="app-brand-mark" aria-hidden="true">G</div>
+      <div>
+        <div class="app-brand-name">Plataform GVI</div>
+        <div class="app-brand-subtitle">Organização simples do dia a dia</div>
+      </div>
+    </div>
 
+    <nav class="app-nav">
+      <a href="#visao-geral" class="app-nav-link is-active" aria-current="page">
+        <span class="app-nav-icon" aria-hidden="true">⌂</span>
+        Início
+      </a>
+      <a href="#proximos-passos" class="app-nav-link">
+        <span class="app-nav-icon" aria-hidden="true">?</span>
+        Próximos passos
+      </a>
+    </nav>
+  </aside>
+
+  <main class="app-main" id="conteudo-principal">
+    <div class="app-topbar">
+      <span class="badge text-bg-success rounded-pill">Sistema ativo</span>
+      <%= button_to "Sair", session_path, method: :delete, class: "btn btn-link text-muted text-decoration-none p-0" %>
+    </div>
+
+    <%= render "shared/flash" %>
+
+    <header class="page-header" id="visao-geral">
+      <div>
+        <p class="page-eyebrow">Início</p>
+        <h1 class="page-title">Sistema pronto para começar</h1>
+        <p class="page-description">
+          Como o projeto ainda tem apenas o registro de usuário, esta tela fica propositalmente simples até existirem módulos reais para acompanhar.
+        </p>
+      </div>
+
+      <div>
+        <%= link_to "Criar usuário", new_user_path, class: "btn btn-primary" %>
+      </div>
+    </header>
+
+    <section class="card" id="proximos-passos">
+      <div class="card-body">
+        <h2 class="card-title h5">Próximos passos</h2>
+        <p class="card-text text-secondary">A interface pode crescer junto com o produto, sem inventar dados ou fluxos antes da hora.</p>
+
+        <div class="alert alert-primary d-flex align-items-start gap-3 mt-3" role="note">
+          <span aria-hidden="true">ℹ</span>
+          <div>
+            <strong>Nenhum dashboard por enquanto</strong>
+            <div class="mt-1 text-secondary">Quando existirem módulos como membros, eventos ou relatórios, esta página pode virar um painel de acompanhamento.</div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+          <%= link_to "Criar usuário", new_user_path, class: "btn btn-primary" %>
+          <%= button_to "Sair", session_path, method: :delete, class: "btn btn-outline-secondary" %>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<nav class="app-mobile-nav mobile-only" aria-label="Menu inferior">
+  <a href="#visao-geral" class="app-mobile-nav-link is-active" aria-current="page">
+    <span class="app-mobile-nav-icon" aria-hidden="true">⌂</span>
+    Início
+  </a>
+  <a href="#proximos-passos" class="app-mobile-nav-link">
+    <span class="app-mobile-nav-icon" aria-hidden="true">?</span>
+    Próximos
+  </a>
+</nav>

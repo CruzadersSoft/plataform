@@ -1,61 +1,63 @@
-<% content_for :head do %>
-  <%= stylesheet_link_tag "auth" %>
-<% end %>
+<% content_for :body_class, "auth-screen" %>
 
 <div class="auth-page">
-  <div class="auth-card">
+  <div class="auth-card card shadow-sm">
+    <div class="card-body p-4">
 
-    <div class="auth-brand">
-      <div class="auth-brand-mark"></div>
-      <span class="auth-brand-name">Plataform GVI</span>
-    </div>
-
-    <div class="auth-header">
-      <h1 class="auth-title">Entrar</h1>
-      <p class="auth-subtitle">Bem‑vindo de volta. Acesse sua conta.</p>
-    </div>
-
-    <% if flash[:alert] %>
-      <div class="auth-flash auth-flash--error"><%= flash[:alert] %></div>
-    <% end %>
-    <% if flash[:notice] %>
-      <div class="auth-flash auth-flash--notice"><%= flash[:notice] %></div>
-    <% end %>
-
-    <%= form_with url: session_path, html: { class: "auth-form" } do |form| %>
-      <div class="auth-field">
-        <%= form.label :email_address, "E‑mail", class: "auth-label" %>
-        <%= form.email_field :email_address,
-              required: true,
-              autofocus: true,
-              autocomplete: "username",
-              placeholder: "seu@email.com",
-              value: params[:email_address],
-              class: "auth-input" %>
+      <div class="auth-brand">
+        <div class="auth-brand-mark"></div>
+        <span class="auth-brand-name">Plataform GVI</span>
       </div>
 
-      <div class="auth-field">
-        <%= form.label :password, "Senha", class: "auth-label" %>
-        <%= form.password_field :password,
-              required: true,
-              autocomplete: "current-password",
-              placeholder: "••••••••",
-              maxlength: 72,
-              class: "auth-input" %>
+      <div class="auth-header">
+        <h1 class="auth-title">Entrar</h1>
+        <p class="auth-subtitle">Acesse sua conta com um formulário direto e fácil de entender.</p>
       </div>
 
-      <%= form.submit "Entrar", class: "auth-btn" %>
-    <% end %>
+      <% if flash[:alert] %>
+        <div class="alert alert-danger" role="alert"><%= flash[:alert] %></div>
+      <% end %>
+      <% if flash[:notice] %>
+        <div class="alert alert-success" role="status"><%= flash[:notice] %></div>
+      <% end %>
 
-    <div class="auth-footer">
-      <p class="auth-footer-row">
-        <%= link_to "Esqueceu a senha?", new_password_path, class: "auth-link" %>
-      </p>
-      <p class="auth-footer-row">
-        Não tem conta?
-        <%= link_to "Criar conta", new_user_path, class: "auth-link" %>
-      </p>
+      <%= form_with url: session_path, html: { class: "auth-form" } do |form| %>
+        <div>
+          <%= form.label :email_address, "E‑mail", class: "form-label" %>
+          <%= form.email_field :email_address,
+                required: true,
+                autofocus: true,
+                autocomplete: "username",
+                placeholder: "seu@email.com",
+                value: params[:email_address],
+                class: "form-control" %>
+          <div class="form-text">Digite o e-mail usado no seu cadastro.</div>
+        </div>
+
+        <div>
+          <%= form.label :password, "Senha", class: "form-label" %>
+          <%= form.password_field :password,
+                required: true,
+                autocomplete: "current-password",
+                placeholder: "••••••••",
+                maxlength: 72,
+                class: "form-control" %>
+          <div class="form-text">Use sua senha atual para entrar.</div>
+        </div>
+
+        <%= form.submit "Entrar", class: "btn btn-primary w-100" %>
+      <% end %>
+
+      <div class="auth-footer">
+        <p class="mb-0">
+          <%= link_to "Esqueceu a senha?", new_password_path, class: "auth-link" %>
+        </p>
+        <p class="mb-0">
+          Ainda não tem conta?
+          <%= link_to "Criar conta", new_user_path, class: "auth-link" %>
+        </p>
+      </div>
+
     </div>
-
   </div>
 </div>
