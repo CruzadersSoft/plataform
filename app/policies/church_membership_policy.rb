@@ -1,0 +1,2 @@
+class ChurchMembershipPolicy < MemberPolicy
+end

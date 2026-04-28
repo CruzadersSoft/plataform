@@ -11,6 +11,13 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   resources :users, only: [ :create, :new ]
 
+  scope module: :church do
+    resources :members, only: %i[index show]
+    resources :departments do
+      resources :memberships, controller: :department_memberships, only: %i[create destroy]
+    end
+  end
+
   root "home#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

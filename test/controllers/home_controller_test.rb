@@ -14,6 +14,16 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to onboarding_path
   end
 
+  test "authenticated user with one active church is restored to church dashboard" do
+    sign_in_as users(:one)
+
+    get root_path
+
+    assert_response :success
+    assert_select "h1", churches(:grace).name
+    assert_select "[data-testid='current-church-slug']", churches(:grace).slug
+  end
+
   test "platform admin without current church is redirected to platform dashboard" do
     sign_in_as users(:platform_admin)
 

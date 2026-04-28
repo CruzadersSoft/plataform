@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_28_124000) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_28_150300) do
   create_table "church_invitation_codes", force: :cascade do |t|
     t.integer "church_id", null: false
     t.integer "church_role", default: 0, null: false
@@ -39,6 +39,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_28_124000) do
     t.index ["church_id", "user_id"], name: "index_church_memberships_on_church_id_and_user_id", unique: true
     t.index ["church_id"], name: "index_church_memberships_on_church_id"
     t.index ["invited_by_id"], name: "index_church_memberships_on_invited_by_id"
+    t.index ["user_id"], name: "index_church_memberships_on_active_user_id", unique: true, where: "status = 0"
     t.index ["user_id"], name: "index_church_memberships_on_user_id"
   end
 
@@ -56,13 +57,33 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_28_124000) do
     t.index ["status"], name: "index_churches_on_status"
   end
 
-  create_table "sessions", force: :cascade do |t|
+  create_table "department_memberships", force: :cascade do |t|
+    t.integer "church_id", null: false
     t.datetime "created_at", null: false
-    t.string "ip_address"
+    t.integer "department_id", null: false
+    t.integer "department_role", default: 0, null: false
+    t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
-    t.string "user_agent"
     t.integer "user_id", null: false
-    t.index ["user_id"], name: "index_sessions_on_user_id"
+    t.index ["church_id", "department_id", "status"], name: "idx_department_memberships_on_church_department_status"
+    t.index ["church_id", "user_id"], name: "index_department_memberships_on_church_id_and_user_id"
+    t.index ["church_id"], name: "index_department_memberships_on_church_id"
+    t.index ["department_id", "user_id"], name: "index_department_memberships_on_department_id_and_user_id", unique: true
+    t.index ["department_id"], name: "index_department_memberships_on_department_id"
+    t.index ["user_id"], name: "index_department_memberships_on_user_id"
+  end
+
+  create_table "departments", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.integer "church_id", null: false
+    t.string "color"
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["church_id", "active"], name: "index_departments_on_church_id_and_active"
+    t.index ["church_id", "name"], name: "index_departments_on_church_id_and_name", unique: true
+    t.index ["church_id"], name: "index_departments_on_church_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -81,5 +102,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_28_124000) do
   add_foreign_key "church_memberships", "churches"
   add_foreign_key "church_memberships", "users"
   add_foreign_key "church_memberships", "users", column: "invited_by_id"
-  add_foreign_key "sessions", "users"
+  add_foreign_key "department_memberships", "churches"
+  add_foreign_key "department_memberships", "departments"
+  add_foreign_key "department_memberships", "users"
+  add_foreign_key "departments", "churches"
 end

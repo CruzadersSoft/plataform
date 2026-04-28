@@ -11,6 +11,7 @@ module Memberships
 
       existing_membership = invitation.church.church_memberships.find_by(user: actor)
       return failure(membership: existing_membership) if existing_membership
+      return failure(errors: [ "Usuario ja possui uma igreja ativa." ]) if active_church_membership
 
       membership = invitation.church.church_memberships.create!(
         user: actor,
@@ -29,6 +30,10 @@ module Memberships
 
       def normalized_code
         code.to_s.strip.upcase
+      end
+
+      def active_church_membership
+        actor.church_memberships.active.includes(:church).detect { |membership| membership.church.active? }
       end
 
       def failure(membership: nil, errors: [])

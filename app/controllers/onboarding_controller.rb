@@ -2,6 +2,9 @@ class OnboardingController < ApplicationController
   skip_before_action :require_current_church
 
   def show
+    return redirect_to root_path if Current.church.present?
+
+    @available_memberships = available_memberships
   end
 
   def create
@@ -27,5 +30,14 @@ class OnboardingController < ApplicationController
 
     def church_params
       params.fetch(:onboarding, {}).fetch(:church, {}).permit(:name, :slug, :legal_name, :email, :phone, :timezone)
+    end
+
+    def available_memberships
+      Current.user
+        .church_memberships
+        .active
+        .includes(:church)
+        .select { |membership| membership.church.active? }
+        .sort_by { |membership| membership.church.name.downcase }
     end
 end

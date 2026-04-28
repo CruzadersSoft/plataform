@@ -13,10 +13,16 @@
         <span class="app-nav-icon" aria-hidden="true">⌂</span>
         Início
       </a>
-      <a href="#proximos-passos" class="app-nav-link">
-        <span class="app-nav-icon" aria-hidden="true">?</span>
-        Próximos passos
-      </a>
+      <%= link_to departments_path, class: "app-nav-link" do %>
+        <span class="app-nav-icon" aria-hidden="true">D</span>
+        Departamentos
+      <% end %>
+      <% if policy(ChurchMembership).index? %>
+        <%= link_to members_path, class: "app-nav-link" do %>
+          <span class="app-nav-icon" aria-hidden="true">M</span>
+          Membros
+        <% end %>
+      <% end %>
     </nav>
   </aside>
 
@@ -70,11 +76,18 @@
           <span aria-hidden="true">ℹ</span>
           <div>
             <strong>Dashboard inicial</strong>
-            <div class="mt-1 text-secondary">Os proximos cards devem nascer dos modulos reais: membros, departamentos, eventos e escalas.</div>
+            <div class="mt-1 text-secondary">Use os modulos de membros e departamentos para preparar eventos e escalas.</div>
           </div>
         </div>
 
-        <div class="d-flex gap-2 mt-4">
+        <div class="d-flex flex-wrap gap-2 mt-4">
+          <%= link_to "Departamentos", departments_path, class: "btn btn-primary" %>
+          <% if policy(ChurchMembership).index? %>
+            <%= link_to "Membros", members_path, class: "btn btn-outline-primary" %>
+          <% end %>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
           <%= button_to "Sair", session_path, method: :delete, class: "btn btn-outline-secondary" %>
         </div>
       </div>

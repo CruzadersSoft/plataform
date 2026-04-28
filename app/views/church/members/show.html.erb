@@ -1,0 +1,36 @@
+<%= render layout: "church/shared/shell", locals: { active: :members } do %>
+  <header class="page-header entity-header">
+    <div>
+      <p class="page-eyebrow">Membro</p>
+      <h1 class="page-title"><%= @membership.user.name || @membership.user.email_address %></h1>
+      <p class="page-description"><%= @membership.user.email_address %></p>
+    </div>
+
+    <%= link_to "Voltar", members_path, class: "btn btn-outline-secondary" %>
+  </header>
+
+  <section class="card entity-card">
+    <div class="card-body">
+      <dl class="row mb-0">
+        <dt class="col-sm-3">Papel na igreja</dt>
+        <dd class="col-sm-9"><%= @membership.church_role.humanize %></dd>
+
+        <dt class="col-sm-3">Status</dt>
+        <dd class="col-sm-9"><%= @membership.status.humanize %></dd>
+
+        <dt class="col-sm-3">Departamentos</dt>
+        <dd class="col-sm-9">
+          <% if @department_memberships.any? %>
+            <ul class="mb-0 ps-3">
+              <% @department_memberships.each do |membership| %>
+                <li><%= membership.department.name %> - <%= membership.department_role.humanize %></li>
+              <% end %>
+            </ul>
+          <% else %>
+            Nenhum departamento vinculado.
+          <% end %>
+        </dd>
+      </dl>
+    </div>
+  </section>
+<% end %>

@@ -22,11 +22,11 @@ module Authentication
     end
 
     def resume_session
-      Current.session ||= find_session_by_cookie
+      Current.user ||= find_user_by_session
     end
 
-    def find_session_by_cookie
-      Session.find_by(id: cookies.signed[:session_id]) if cookies.signed[:session_id]
+    def find_user_by_session
+      User.find_by(id: session[:user_id]) if session[:user_id]
     end
 
     def request_authentication
@@ -35,24 +35,30 @@ module Authentication
     end
 
     def after_authentication_url
-      session.delete(:return_to_after_authenticating) || default_after_authentication_url
+      requested_url = session.delete(:return_to_after_authenticating)
+      return default_after_authentication_url if requested_url.blank?
+      return default_after_authentication_url if platform_url?(requested_url) && !Current.user&.platform_admin?
+
+      requested_url
     end
 
     def default_after_authentication_url
       Current.user&.platform_admin? ? platform_root_url : root_url
     end
 
+    def platform_url?(url)
+      URI.parse(url).path.start_with?(platform_root_path)
+    rescue URI::InvalidURIError
+      false
+    end
+
     def start_new_session_for(user)
-      user.sessions.create!(user_agent: request.user_agent, ip_address: request.remote_ip).tap do |session|
-        Current.session = session
-        cookies.signed.permanent[:session_id] = { value: session.id, httponly: true, same_site: :lax }
-      end
+      Current.user = user
+      session[:user_id] = user.id
     end
 
     def terminate_session
-      Current.session.destroy
-      session.delete(:church_id)
+      session.delete(:user_id)
       Current.reset
-      cookies.delete(:session_id)
     end
 end

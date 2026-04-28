@@ -1,0 +1,60 @@
+<div class="app-shell church-shell">
+  <aside class="app-sidebar" aria-label="Menu principal">
+    <div class="app-brand">
+      <div class="app-brand-mark" aria-hidden="true">G</div>
+      <div>
+        <div class="app-brand-name"><%= current_church.name %></div>
+        <div class="app-brand-subtitle">Painel da igreja</div>
+      </div>
+    </div>
+
+    <nav class="app-nav">
+      <%= link_to root_path, class: "app-nav-link #{'is-active' if active == :home}", aria: (active == :home ? { current: "page" } : nil) do %>
+        <span class="app-nav-icon" aria-hidden="true">I</span>
+        Início
+      <% end %>
+      <%= link_to departments_path, class: "app-nav-link #{'is-active' if active == :departments}", aria: (active == :departments ? { current: "page" } : nil) do %>
+        <span class="app-nav-icon" aria-hidden="true">D</span>
+        Departamentos
+      <% end %>
+      <% if policy(ChurchMembership).index? %>
+        <%= link_to members_path, class: "app-nav-link #{'is-active' if active == :members}", aria: (active == :members ? { current: "page" } : nil) do %>
+          <span class="app-nav-icon" aria-hidden="true">M</span>
+          Membros
+        <% end %>
+      <% end %>
+    </nav>
+  </aside>
+
+  <main class="app-main church-main" id="conteudo-principal">
+    <div class="app-topbar">
+      <div class="church-context">
+        <span class="badge text-bg-success rounded-pill"><%= current_church.status.humanize %></span>
+        <% if Current.church_membership.present? %>
+          <span class="church-context-role"><%= Current.church_membership.church_role.humanize %></span>
+        <% end %>
+      </div>
+      <%= button_to "Sair", session_path, method: :delete, class: "btn btn-link text-muted text-decoration-none p-0" %>
+    </div>
+
+    <%= render "shared/flash" %>
+    <%= yield %>
+  </main>
+</div>
+
+<nav class="app-mobile-nav mobile-only" aria-label="Menu inferior">
+  <%= link_to root_path, class: "app-mobile-nav-link #{'is-active' if active == :home}", aria: (active == :home ? { current: "page" } : nil) do %>
+    <span class="app-mobile-nav-icon" aria-hidden="true">I</span>
+    Início
+  <% end %>
+  <%= link_to departments_path, class: "app-mobile-nav-link #{'is-active' if active == :departments}", aria: (active == :departments ? { current: "page" } : nil) do %>
+    <span class="app-mobile-nav-icon" aria-hidden="true">D</span>
+    Departamentos
+  <% end %>
+  <% if policy(ChurchMembership).index? %>
+    <%= link_to members_path, class: "app-mobile-nav-link #{'is-active' if active == :members}", aria: (active == :members ? { current: "page" } : nil) do %>
+      <span class="app-mobile-nav-icon" aria-hidden="true">M</span>
+      Membros
+    <% end %>
+  <% end %>
+</nav>

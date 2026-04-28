@@ -1,0 +1,72 @@
+<%= render layout: "church/shared/shell", locals: { active: :departments } do %>
+  <header class="page-header entity-header">
+    <div>
+      <p class="page-eyebrow">Departamento</p>
+      <h1 class="page-title"><%= @department.name %></h1>
+      <p class="page-description"><%= @department.description.presence || "Sem descricao cadastrada." %></p>
+    </div>
+
+    <div class="d-flex gap-2">
+      <%= link_to "Voltar", departments_path, class: "btn btn-outline-secondary" %>
+      <% if policy(@department).edit? %>
+        <%= link_to "Editar", edit_department_path(@department), class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  </header>
+
+  <% if policy(@department).manage_memberships? %>
+    <section class="card entity-card mb-4">
+      <div class="card-body">
+        <h2 class="h5">Adicionar membro</h2>
+        <%= form_with url: department_memberships_path(@department), scope: :department_membership, local: true, class: "row g-3 align-items-end" do |form| %>
+          <div class="col-md-6">
+            <%= form.label :user_id, "Membro", class: "form-label" %>
+            <%= form.select :user_id, @available_memberships.map { |membership| [membership.user.name || membership.user.email_address, membership.user_id] }, {}, class: "form-select" %>
+          </div>
+          <div class="col-md-4">
+            <%= form.label :department_role, "Papel", class: "form-label" %>
+            <%= form.select :department_role, DepartmentMembership.department_roles.keys.map { |role| [role.humanize, role] }, {}, class: "form-select" %>
+          </div>
+          <div class="col-md-2">
+            <%= form.submit "Adicionar", class: "btn btn-primary w-100" %>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <section class="card entity-card">
+    <div class="card-body">
+      <h2 class="h5">Membros do departamento</h2>
+      <div class="table-responsive">
+        <table class="table entity-table align-middle mb-0">
+          <thead>
+            <tr>
+              <th scope="col">Nome</th>
+              <th scope="col">Papel</th>
+              <th scope="col" class="text-end">Acoes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @department_memberships.each do |membership| %>
+              <tr>
+                <td>
+                  <div class="member-identity">
+                    <span class="member-avatar" aria-hidden="true"><%= (membership.user.name || membership.user.email_address).first.upcase %></span>
+                    <span><%= membership.user.name || membership.user.email_address %></span>
+                  </div>
+                </td>
+                <td><%= membership.department_role.humanize %></td>
+                <td class="text-end">
+                  <% if policy(@department).manage_memberships? %>
+                    <%= button_to "Remover", department_membership_path(@department, membership), method: :delete, class: "btn btn-sm btn-outline-danger" %>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+<% end %>

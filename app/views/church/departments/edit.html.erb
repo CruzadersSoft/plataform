@@ -1,0 +1,11 @@
+<%= render layout: "church/shared/shell", locals: { active: :departments } do %>
+  <header class="page-header entity-header">
+    <div>
+      <p class="page-eyebrow">Painel da igreja</p>
+      <h1 class="page-title">Editar departamento</h1>
+      <p class="page-description">Atualize os dados da equipe operacional.</p>
+    </div>
+  </header>
+
+  <%= render "form", department: @department %>
+<% end %>

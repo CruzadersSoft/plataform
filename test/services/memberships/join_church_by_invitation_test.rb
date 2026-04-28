@@ -26,4 +26,18 @@ class Memberships::JoinChurchByInvitationTest < ActiveSupport::TestCase
     assert_not result.success?
     assert_equal church_memberships(:grace_admin), result.membership
   end
+
+  test "does not join another church when actor already has an active church" do
+    invitation = churches(:hope).church_invitation_codes.create!(
+      created_by: users(:one),
+      church_role: :volunteer,
+      status: :active
+    )
+
+    result = Memberships::JoinChurchByInvitation.new(actor: users(:one), code: invitation.code).call
+
+    assert_not result.success?
+    assert_nil result.church
+    assert_includes result.errors, "Usuario ja possui uma igreja ativa."
+  end
 end

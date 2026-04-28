@@ -27,4 +27,16 @@ class Onboarding::CreateChurchTest < ActiveSupport::TestCase
     assert_nil result.invitation_code
     assert result.church.errors.any?
   end
+
+  test "does not create another church for an actor with an active church" do
+    result = Onboarding::CreateChurch.new(
+      actor: users(:one),
+      params: { name: "Second Church", slug: "second-church" }
+    ).call
+
+    assert_not result.success?
+    assert_nil result.membership
+    assert_nil result.invitation_code
+    assert_includes result.errors, "Usuario ja possui uma igreja ativa."
+  end
 end

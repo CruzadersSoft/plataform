@@ -14,6 +14,13 @@ two:
   platform_role: member
   status: active
 
+three:
+  name: User Three
+  email_address: three@example.com
+  password_digest: <%= password_digest %>
+  platform_role: member
+  status: active
+
 platform_admin:
   name: Platform Admin
   email_address: platform@example.com

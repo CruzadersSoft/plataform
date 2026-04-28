@@ -19,7 +19,9 @@ class PasswordsController < ApplicationController
 
   def update
     if @user.update(params.permit(:password, :password_confirmation))
-      @user.sessions.destroy_all
+      session.delete(:user_id)
+      session.delete(:church_id)
+      Current.reset
       redirect_to new_session_path, notice: "Sua senha foi atualizada com sucesso."
     else
       redirect_to edit_password_path(params[:token]), alert: "As senhas não conferem. Revise os campos e tente novamente."

@@ -1,0 +1,20 @@
+welcome_leader:
+  church: grace
+  department: welcome
+  user: one
+  department_role: leader
+  status: active
+
+welcome_volunteer:
+  church: grace
+  department: welcome
+  user: three
+  department_role: volunteer
+  status: active
+
+worship_volunteer:
+  church: grace
+  department: worship
+  user: three
+  department_role: volunteer
+  status: active

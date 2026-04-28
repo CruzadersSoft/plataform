@@ -9,6 +9,14 @@ class OnboardingControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "authenticated user with active church is redirected away from onboarding" do
+    sign_in_as users(:one)
+
+    get onboarding_path
+
+    assert_redirected_to root_path
+  end
+
   test "creating a church activates it for the session" do
     sign_in_as users(:two)
 

@@ -42,6 +42,10 @@ class ApplicationPolicy
     Current.church_membership&.active? && Current.church_membership&.church_admin?
   end
 
+  def department_leader?
+    Current.church_membership&.active? && Current.church_membership&.department_leader?
+  end
+
   class Scope
     def initialize(user, scope)
       @user = user

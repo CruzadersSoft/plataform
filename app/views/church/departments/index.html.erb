@@ -1,0 +1,47 @@
+<%= render layout: "church/shared/shell", locals: { active: :departments } do %>
+  <header class="page-header entity-header">
+    <div>
+      <p class="page-eyebrow">Painel da igreja</p>
+      <h1 class="page-title">Departamentos</h1>
+      <p class="page-description">Equipes operacionais do tenant ativo.</p>
+    </div>
+
+    <% if policy(Department).create? %>
+      <%= link_to "Novo departamento", new_department_path, class: "btn btn-primary" %>
+    <% end %>
+  </header>
+
+  <section class="card entity-card">
+    <div class="table-responsive">
+      <table class="table entity-table align-middle mb-0">
+        <thead>
+          <tr>
+            <th scope="col">Nome</th>
+            <th scope="col">Status</th>
+            <th scope="col">Cor</th>
+            <th scope="col" class="text-end">Acoes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @departments.each do |department| %>
+            <tr data-testid="department-row">
+              <td>
+                <div class="entity-name-cell">
+                  <span class="department-color-dot" style="--department-color: <%= department.color.presence || "#d7d8d1" %>"></span>
+                  <%= link_to department.name, department_path(department), class: "fw-semibold" %>
+                </div>
+              </td>
+              <td><span class="badge text-bg-secondary"><%= department.active? ? "Ativo" : "Inativo" %></span></td>
+              <td><span class="entity-muted"><%= department.color.presence || "Nao informado" %></span></td>
+              <td class="text-end">
+                <% if policy(department).edit? %>
+                  <%= link_to "Editar", edit_department_path(department), class: "btn btn-sm btn-outline-primary" %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+<% end %>
