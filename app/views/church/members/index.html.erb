@@ -1,0 +1,37 @@
+<%= render layout: "church/shared/shell", locals: { active: :members } do %>
+  <header class="page-header entity-header">
+    <div>
+      <p class="page-eyebrow">Painel da igreja</p>
+      <h1 class="page-title">Membros</h1>
+      <p class="page-description">Pessoas com vinculo ativo nesta igreja.</p>
+    </div>
+  </header>
+
+  <section class="card entity-card">
+    <div class="table-responsive">
+      <table class="table entity-table align-middle mb-0">
+        <thead>
+          <tr>
+            <th scope="col">Nome</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Papel na igreja</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @memberships.each do |membership| %>
+            <tr data-testid="member-row">
+              <td>
+                <div class="member-identity">
+                  <span class="member-avatar" aria-hidden="true"><%= (membership.user.name || membership.user.email_address).first.upcase %></span>
+                  <%= link_to membership.user.name || membership.user.email_address, member_path(membership.user), class: "fw-semibold" %>
+                </div>
+              </td>
+              <td><%= membership.user.email_address %></td>
+              <td><%= membership.church_role.humanize %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+<% end %>

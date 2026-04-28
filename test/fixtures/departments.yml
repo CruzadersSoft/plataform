@@ -1,0 +1,20 @@
+welcome:
+  church: grace
+  name: Welcome
+  description: Reception and first-time visitors
+  color: "#1f6feb"
+  active: true
+
+worship:
+  church: grace
+  name: Worship
+  description: Music and production
+  color: "#1d7a46"
+  active: true
+
+hope_care:
+  church: hope
+  name: Care
+  description: Hope Church pastoral care
+  color: "#b13b2e"
+  active: true

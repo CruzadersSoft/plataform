@@ -1,5 +1,3 @@
 class Current < ActiveSupport::CurrentAttributes
-  attribute :session, :church, :church_membership
-
-  delegate :user, to: :session, allow_nil: true
+  attribute :user, :church, :church_membership
 end

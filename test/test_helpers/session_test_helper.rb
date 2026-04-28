@@ -1,11 +1,7 @@
 module SessionTestHelper
   def sign_in_as(user)
-    Current.session = user.sessions.create!
-
-    ActionDispatch::TestRequest.create.cookie_jar.tap do |cookie_jar|
-      cookie_jar.signed[:session_id] = Current.session.id
-      cookies["session_id"] = cookie_jar[:session_id]
-    end
+    Current.user = user
+    post session_path, params: { email_address: user.email_address, password: "password" }
   end
 
   def sign_in_to_church_as(user, church)
@@ -14,10 +10,10 @@ module SessionTestHelper
   end
 
   def sign_out
-    Current.session&.destroy!
+    Current.user = nil
     Current.church = nil
     Current.church_membership = nil
-    cookies.delete("session_id")
+    delete session_path
   end
 end
 

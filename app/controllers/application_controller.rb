@@ -25,8 +25,14 @@ class ApplicationController < ActionController::Base
     end
 
     def set_current_church
-      return unless Current.user && session[:church_id].present?
+      return unless Current.user
 
+      return restore_current_church_from_session if session[:church_id].present?
+
+      restore_single_active_church
+    end
+
+    def restore_current_church_from_session
       result = Tenancy::ContextResolver.new(user: Current.user, church_id: session[:church_id]).call
       if result.success?
         Current.church = result.church
@@ -35,7 +41,25 @@ class ApplicationController < ActionController::Base
         session.delete(:church_id)
         Current.church = nil
         Current.church_membership = nil
+        restore_single_active_church
       end
+    end
+
+    def restore_single_active_church
+      return if Current.user.platform_admin?
+
+      memberships = Current.user
+        .church_memberships
+        .active
+        .includes(:church)
+        .select { |membership| membership.church.active? }
+
+      return unless memberships.one?
+
+      membership = memberships.first
+      session[:church_id] = membership.church_id
+      Current.church = membership.church
+      Current.church_membership = membership
     end
 
     def require_current_church
@@ -59,6 +83,8 @@ class ApplicationController < ActionController::Base
     end
 
     def user_not_authorized
+      return redirect_to root_path if controller_path.start_with?("platform/")
+
       redirect_to root_path, alert: "Voce nao tem permissao para acessar esta area."
     end
 end

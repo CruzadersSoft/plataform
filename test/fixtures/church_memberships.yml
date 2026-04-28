@@ -5,6 +5,13 @@ grace_admin:
   status: active
   joined_at: <%= Time.current %>
 
+grace_volunteer:
+  church: grace
+  user: three
+  church_role: volunteer
+  status: active
+  joined_at: <%= Time.current %>
+
 platform_grace:
   church: grace
   user: platform_admin

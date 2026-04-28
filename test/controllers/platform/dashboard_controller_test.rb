@@ -16,4 +16,16 @@ class Platform::DashboardControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to root_path
   end
+
+  test "regular user denied from platform dashboard does not see permission alert" do
+    sign_in_as users(:two)
+
+    get platform_root_path
+    follow_redirect!
+    assert_redirected_to onboarding_path
+    follow_redirect!
+
+    assert_response :success
+    assert_select ".alert", text: /Voce nao tem permissao/, count: 0
+  end
 end

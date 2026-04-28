@@ -6,6 +6,8 @@ module Onboarding
     end
 
     def call
+      return active_church_failure if active_church_membership
+
       church = Church.new(church_params)
       membership = nil
       invitation_code = nil
@@ -34,6 +36,14 @@ module Onboarding
 
       def church_params
         params.slice(:name, :slug, :legal_name, :email, :phone, :timezone)
+      end
+
+      def active_church_membership
+        actor.church_memberships.active.includes(:church).detect { |membership| membership.church.active? }
+      end
+
+      def active_church_failure
+        ApplicationServiceResult.new(success: false, church: active_church_membership.church, membership: nil, invitation_code: nil, errors: [ "Usuario ja possui uma igreja ativa." ])
       end
   end
 end

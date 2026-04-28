@@ -1,17 +1,22 @@
 // ── Theme Tokens ─────────────────────────────────────────────────────────
 $app-box-shadow: 0 4px 16px rgba(24, 24, 27, 0.08);
+$app-surface: #ffffff;
+$app-surface-soft: #fbfbf9;
+$app-ink: #18181b;
+$app-muted: #5c5f66;
+$app-border: #d7d8d1;
 
 :root {
   --bs-body-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --bs-body-bg: #f5f5f3;
-  --bs-body-color: #18181b;
+  --bs-body-color: #{$app-ink};
   --bs-primary: #1f6feb;
   --bs-primary-rgb: 31, 111, 235;
-  --bs-secondary: #5c5f66;
+  --bs-secondary: #{$app-muted};
   --bs-success: #1d7a46;
   --bs-danger: #b13b2e;
   --bs-warning: #9a6700;
-  --bs-border-color: #d7d8d1;
+  --bs-border-color: #{$app-border};
   --bs-border-radius: 0.4rem;
   --bs-border-radius-sm: 0.25rem;
   --bs-border-radius-lg: 0.6rem;
@@ -20,6 +25,15 @@ $app-box-shadow: 0 4px 16px rgba(24, 24, 27, 0.08);
   --bs-box-shadow: #{$app-box-shadow};
 }
 
+html { text-size-adjust: 100%; }
+
+body {
+  min-width: 320px;
+  text-rendering: optimizeLegibility;
+}
+
+a { text-underline-offset: 0.16em; }
+
 .btn {
   --bs-btn-padding-y: 0.45rem;
   --bs-btn-padding-x: 0.9rem;
@@ -27,23 +41,44 @@ $app-box-shadow: 0 4px 16px rgba(24, 24, 27, 0.08);
   --bs-btn-border-radius: var(--bs-border-radius);
 }
 
-.form-control {
-  --bs-body-bg: #ffffff;
-  --bs-border-color: #d7d8d1;
+.btn-sm {
+  --bs-btn-padding-y: 0.32rem;
+  --bs-btn-padding-x: 0.7rem;
 }
 
-.form-control:focus {
+.form-label {
+  margin-bottom: 0.4rem;
+  color: #3f4147;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.form-control,
+.form-select {
+  --bs-body-bg: #{$app-surface};
+  --bs-border-color: #{$app-border};
+  min-height: 2.65rem;
+}
+
+.form-control:focus,
+.form-select:focus {
   border-color: var(--bs-primary);
   box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.12);
 }
 
 .card {
-  --bs-card-bg: #ffffff;
-  --bs-card-border-color: #d7d8d1;
+  --bs-card-bg: #{$app-surface};
+  --bs-card-border-color: #{$app-border};
   --bs-card-border-radius: var(--bs-border-radius-lg);
   --bs-card-spacer-y: 1.25rem;
   --bs-card-spacer-x: 1.25rem;
+  overflow: hidden;
   box-shadow: var(--bs-box-shadow-sm);
+}
+
+.card-title,
+.card-body > h2:first-child {
+  margin-bottom: 0.45rem;
 }
 
 .badge {
@@ -57,6 +92,51 @@ $app-box-shadow: 0 4px 16px rgba(24, 24, 27, 0.08);
   --bs-alert-border-radius: var(--bs-border-radius);
   --bs-alert-padding-y: 0.75rem;
   --bs-alert-padding-x: 1rem;
+}
+
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-border-color: #e5e5df;
+  margin-bottom: 0;
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.9rem 1rem;
+}
+
+.table thead th {
+  background: $app-surface-soft;
+  color: $app-muted;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.table tbody tr:hover {
+  background: rgba(31, 111, 235, 0.035);
+}
+
+.table-responsive {
+  border-radius: inherit;
+}
+
+dl.row {
+  row-gap: 0.45rem;
+}
+
+dl.row dt {
+  color: $app-muted;
+  font-weight: 600;
+}
+
+dl.row dd {
+  margin-bottom: 0.45rem;
 }
 
 // ── App Shell ─────────────────────────────────────────────────────────────
@@ -99,7 +179,7 @@ $app-box-shadow: 0 4px 16px rgba(24, 24, 27, 0.08);
 .app-brand-name {
   font-size: 1rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
 }
 
 .app-brand-subtitle {
@@ -145,11 +225,15 @@ $app-box-shadow: 0 4px 16px rgba(24, 24, 27, 0.08);
   place-items: center;
   width: 1.35rem;
   height: 1.35rem;
+  border-radius: 0.35rem;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.82rem;
+  font-weight: 700;
 }
 
 .app-main {
   min-width: 0;
-  padding: 1.5rem;
+  padding: 1.75rem;
 }
 
 .app-topbar {
@@ -158,9 +242,28 @@ $app-box-shadow: 0 4px 16px rgba(24, 24, 27, 0.08);
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(215, 216, 209, 0.8);
+}
+
+.church-context {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.church-context-role {
+  color: $app-muted;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 // ── Page Layout ───────────────────────────────────────────────────────────
+.container.py-5 {
+  max-width: 1120px;
+}
+
 .page-header {
   display: flex;
   flex-wrap: wrap;
@@ -179,9 +282,9 @@ $app-box-shadow: 0 4px 16px rgba(24, 24, 27, 0.08);
 
 .page-title {
   margin: 0;
-  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+  font-size: 1.85rem;
   line-height: 1.2;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
 }
 
 .page-description {
@@ -192,6 +295,67 @@ $app-box-shadow: 0 4px 16px rgba(24, 24, 27, 0.08);
 }
 
 .mobile-only { display: none; }
+
+// ── Church Entities ───────────────────────────────────────────────────────
+.church-main {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.54), rgba(255, 255, 255, 0)),
+    var(--bs-body-bg);
+}
+
+.entity-header {
+  padding: 0.15rem 0 0.35rem;
+}
+
+.entity-card {
+  border-color: rgba(215, 216, 209, 0.95);
+}
+
+.entity-table a {
+  color: $app-ink;
+  text-decoration: none;
+}
+
+.entity-table a:hover {
+  color: var(--bs-primary);
+  text-decoration: underline;
+}
+
+.entity-name-cell,
+.member-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.department-color-dot {
+  flex: 0 0 auto;
+  width: 0.8rem;
+  height: 0.8rem;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  background: var(--department-color);
+  box-shadow: 0 0 0 1px $app-border;
+}
+
+.member-avatar {
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: #eef4ff;
+  color: #1f4f99;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.entity-muted {
+  color: $app-muted;
+  font-size: 0.92rem;
+}
 
 // ── Auth Layout ───────────────────────────────────────────────────────────
 .auth-page {
@@ -223,7 +387,7 @@ $app-box-shadow: 0 4px 16px rgba(24, 24, 27, 0.08);
 .auth-brand-name {
   font-size: 0.9rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
 }
 
 .auth-header {
@@ -232,8 +396,8 @@ $app-box-shadow: 0 4px 16px rgba(24, 24, 27, 0.08);
 
 .auth-title {
   margin: 0 0 0.35rem;
-  font-size: clamp(1.25rem, 2.5vw, 1.6rem);
-  letter-spacing: -0.03em;
+  font-size: 1.55rem;
+  letter-spacing: 0;
 }
 
 .auth-subtitle {
@@ -294,5 +458,7 @@ $app-box-shadow: 0 4px 16px rgba(24, 24, 27, 0.08);
 
 @media (max-width: 575.98px) {
   html { font-size: 15px; }
-  .page-title { font-size: 1.9rem; }
+  .app-main { padding: 1.25rem 1rem 6rem; }
+  .page-title { font-size: 1.55rem; }
+  .table > :not(caption) > * > * { padding: 0.75rem; }
 }
