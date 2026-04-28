@@ -14,6 +14,14 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to onboarding_path
   end
 
+  test "platform admin without current church is redirected to platform dashboard" do
+    sign_in_as users(:platform_admin)
+
+    get root_path
+
+    assert_redirected_to platform_root_path
+  end
+
   test "shows active church dashboard when user has current church" do
     sign_in_to_church_as users(:one), churches(:grace)
 

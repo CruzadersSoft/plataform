@@ -1,8 +1,16 @@
 <main class="container py-5" id="conteudo-principal">
   <%= render "shared/flash" %>
 
-  <header>
+  <header class="mb-4">
     <p class="text-secondary mb-1">Platform Admin</p>
     <h1 class="h3">Painel da plataforma</h1>
   </header>
+
+  <section class="card">
+    <div class="card-body">
+      <h2 class="h5">Igrejas</h2>
+      <p class="text-secondary">Gerencie os tenants cadastrados na plataforma.</p>
+      <%= link_to "Acessar igrejas", platform_churches_path, class: "btn btn-primary" %>
+    </div>
+  </section>
 </main>

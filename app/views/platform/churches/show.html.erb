@@ -1,0 +1,40 @@
+<main class="container py-5" id="conteudo-principal">
+  <%= render "shared/flash" %>
+
+  <header class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
+    <div>
+      <p class="text-secondary mb-1">Platform Admin</p>
+      <h1 class="h3 mb-1"><%= @church.name %></h1>
+      <p class="text-secondary mb-0">Detalhes do tenant.</p>
+    </div>
+
+    <div class="d-flex gap-2">
+      <%= link_to "Voltar", platform_churches_path, class: "btn btn-outline-secondary" %>
+      <%= link_to "Editar", edit_platform_church_path(@church), class: "btn btn-primary" %>
+    </div>
+  </header>
+
+  <section class="card">
+    <div class="card-body">
+      <dl class="row mb-0">
+        <dt class="col-sm-3">Slug</dt>
+        <dd class="col-sm-9" data-testid="church-slug"><%= @church.slug %></dd>
+
+        <dt class="col-sm-3">Razao social</dt>
+        <dd class="col-sm-9"><%= @church.legal_name.presence || "Nao informado" %></dd>
+
+        <dt class="col-sm-3">E-mail</dt>
+        <dd class="col-sm-9"><%= @church.email.presence || "Nao informado" %></dd>
+
+        <dt class="col-sm-3">Telefone</dt>
+        <dd class="col-sm-9"><%= @church.phone.presence || "Nao informado" %></dd>
+
+        <dt class="col-sm-3">Fuso horario</dt>
+        <dd class="col-sm-9"><%= @church.timezone %></dd>
+
+        <dt class="col-sm-3">Status</dt>
+        <dd class="col-sm-9"><span class="badge text-bg-secondary"><%= @church.status.humanize %></span></dd>
+      </dl>
+    </div>
+  </section>
+</main>
