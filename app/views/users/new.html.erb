@@ -1,55 +1,60 @@
-<% content_for :head do %>
-  <%= stylesheet_link_tag "auth" %>
-<% end %>
+<% content_for :body_class, "auth-screen" %>
 
 <div class="auth-page">
-  <div class="auth-card">
+  <div class="auth-card card shadow-sm">
+    <div class="card-body p-4">
 
-    <div class="auth-brand">
-      <div class="auth-brand-mark"></div>
-      <span class="auth-brand-name">Plataform GVI</span>
-    </div>
-
-    <div class="auth-header">
-      <h1 class="auth-title">Criar conta</h1>
-      <p class="auth-subtitle">Comece agora. É rápido e gratuito.</p>
-    </div>
-
-    <%= form_with model: @user, html: { class: "auth-form" } do |form| %>
-      <div class="auth-field">
-        <%= form.label :email_address, "E‑mail", class: "auth-label" %>
-        <%= form.email_field :email_address,
-              autofocus: true,
-              autocomplete: "username",
-              placeholder: "seu@email.com",
-              class: "auth-input" %>
+      <div class="auth-brand">
+        <div class="auth-brand-mark"></div>
+        <span class="auth-brand-name">Plataform GVI</span>
       </div>
 
-      <div class="auth-field">
-        <%= form.label :password, "Senha", class: "auth-label" %>
-        <%= form.password_field :password,
-              autocomplete: "new-password",
-              placeholder: "••••••••",
-              class: "auth-input" %>
+      <div class="auth-header">
+        <h1 class="auth-title">Criar conta</h1>
+        <p class="auth-subtitle">Preencha apenas o essencial para começar com segurança.</p>
       </div>
 
-      <div class="auth-field">
-        <%= form.label :password_confirmation, "Confirmar senha", class: "auth-label" %>
-        <%= form.password_field :password_confirmation,
-              autocomplete: "new-password",
-              placeholder: "••••••••",
-              class: "auth-input" %>
+      <%= render "shared/auth_errors", resource: @user %>
+
+      <%= form_with model: @user, html: { class: "auth-form" } do |form| %>
+        <div>
+          <%= form.label :email_address, "E‑mail", class: "form-label" %>
+          <%= form.email_field :email_address,
+                autofocus: true,
+                autocomplete: "username",
+                placeholder: "seu@email.com",
+                class: "form-control" %>
+          <div class="form-text">Vamos usar este e-mail para acesso e recuperação de senha.</div>
+        </div>
+
+        <div>
+          <%= form.label :password, "Senha", class: "form-label" %>
+          <%= form.password_field :password,
+                autocomplete: "new-password",
+                placeholder: "••••••••",
+                class: "form-control" %>
+          <div class="form-text">Escolha uma senha fácil de lembrar e difícil de adivinhar.</div>
+        </div>
+
+        <div>
+          <%= form.label :password_confirmation, "Confirmar senha", class: "form-label" %>
+          <%= form.password_field :password_confirmation,
+                autocomplete: "new-password",
+                placeholder: "••••••••",
+                class: "form-control" %>
+          <div class="form-text">Repita a senha exatamente como acima.</div>
+        </div>
+
+        <%= form.submit "Criar conta", class: "btn btn-primary w-100" %>
+      <% end %>
+
+      <div class="auth-footer">
+        <p class="mb-0">
+          Já tem conta?
+          <%= link_to "Entrar", new_session_path, class: "auth-link" %>
+        </p>
       </div>
 
-      <%= form.submit "Criar conta", class: "auth-btn" %>
-    <% end %>
-
-    <div class="auth-footer">
-      <p class="auth-footer-row">
-        Já tem conta?
-        <%= link_to "Entrar", new_session_path, class: "auth-link" %>
-      </p>
     </div>
-
   </div>
 </div>

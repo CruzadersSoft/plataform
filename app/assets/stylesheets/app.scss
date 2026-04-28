@@ -1,0 +1,289 @@
+// ── Bootstrap Variable Overrides ─────────────────────────────────────────
+$font-family-sans-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+$body-bg:    #f5f5f3;
+$body-color: #18181b;
+
+$primary:   #1f6feb;
+$secondary: #5c5f66;
+$success:   #1d7a46;
+$danger:    #b13b2e;
+$warning:   #9a6700;
+
+$border-radius:    0.4rem;
+$border-radius-sm: 0.25rem;
+$border-radius-lg: 0.6rem;
+$border-radius-xl: 0.85rem;
+
+$box-shadow-sm: 0 1px 2px rgba(24, 24, 27, 0.06);
+$box-shadow:    0 4px 16px rgba(24, 24, 27, 0.08);
+
+$input-bg:                 #ffffff;
+$input-border-color:       #d7d8d1;
+$input-focus-border-color: $primary;
+$input-focus-box-shadow:   0 0 0 3px rgba(31, 111, 235, 0.12);
+$input-padding-y:          0.45rem;
+$input-padding-x:          0.75rem;
+$input-border-radius:      $border-radius;
+
+$btn-padding-y:     0.45rem;
+$btn-padding-x:     0.9rem;
+$btn-font-weight:   600;
+$btn-border-radius: $border-radius;
+
+$card-bg:            #ffffff;
+$card-border-color:  #d7d8d1;
+$card-border-radius: $border-radius-lg;
+$card-spacer-y:      1.25rem;
+$card-spacer-x:      1.25rem;
+$card-box-shadow:    $box-shadow-sm;
+
+$badge-border-radius: 999px;
+$badge-padding-y:     0.3em;
+$badge-padding-x:     0.65em;
+$badge-font-weight:   600;
+
+$alert-border-radius: $border-radius;
+$alert-padding-y:     0.75rem;
+$alert-padding-x:     1rem;
+
+// ── Bootstrap ─────────────────────────────────────────────────────────────
+@import "bootstrap";
+
+// ── App Shell ─────────────────────────────────────────────────────────────
+.app-shell {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.app-sidebar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100vh;
+  padding: 1.5rem;
+  background: #111214;
+  color: #f7f7f5;
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.app-brand-mark {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.9rem;
+  background: #f7f7f5;
+  color: #111214;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.app-brand-name {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.app-brand-subtitle {
+  font-size: 0.9rem;
+  color: rgba(247, 247, 245, 0.72);
+}
+
+.app-nav,
+.app-mobile-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.app-nav-link,
+.app-mobile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.4rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+  }
+
+  &.is-active {
+    background: #f7f7f5;
+    color: #111214;
+  }
+}
+
+.app-nav-icon,
+.app-mobile-nav-icon {
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.app-main {
+  min-width: 0;
+  padding: 1.5rem;
+}
+
+.app-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+// ── Page Layout ───────────────────────────────────────────────────────────
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.page-eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--bs-secondary-color);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.page-title {
+  margin: 0;
+  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.page-description {
+  max-width: 60ch;
+  margin: 0.4rem 0 0;
+  color: var(--bs-secondary-color);
+  font-size: 0.9rem;
+}
+
+.mobile-only { display: none; }
+
+// ── Auth Layout ───────────────────────────────────────────────────────────
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+.auth-card {
+  width: min(100%, 30rem);
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.auth-brand-mark {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: #111214;
+  flex-shrink: 0;
+}
+
+.auth-brand-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.auth-header {
+  margin-bottom: 1.25rem;
+}
+
+.auth-title {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.25rem, 2.5vw, 1.6rem);
+  letter-spacing: -0.03em;
+}
+
+.auth-subtitle {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--bs-secondary-color);
+}
+
+.auth-form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.auth-footer {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--bs-secondary-color);
+}
+
+.auth-link { font-weight: 700; }
+
+// ── Responsive ────────────────────────────────────────────────────────────
+@include media-breakpoint-down(lg) {
+  .app-shell { grid-template-columns: 1fr; }
+  .app-sidebar { display: none; }
+  .app-main { padding: 1.5rem 1.5rem 6rem; }
+  .mobile-only { display: block; }
+
+  .app-mobile-nav {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    left: 1rem;
+    z-index: $zindex-fixed;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+    padding: 0.6rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 1.3rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: $box-shadow;
+  }
+
+  .app-mobile-nav-link {
+    flex-direction: column;
+    justify-content: center;
+    min-height: 3.7rem;
+    padding: 0.7rem 0.5rem;
+    font-size: 0.82rem;
+    text-align: center;
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  html { font-size: 15px; }
+  .page-title { font-size: 1.9rem; }
+}

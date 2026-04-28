@@ -1,0 +1,17 @@
+<% if flash[:notice] || flash[:alert] %>
+  <div class="d-grid gap-2 mb-4" role="status" aria-live="polite">
+    <% if flash[:notice] %>
+      <div class="alert alert-success d-flex align-items-start gap-2 mb-0" role="status">
+        <strong>Sucesso</strong>
+        <span><%= flash[:notice] %></span>
+      </div>
+    <% end %>
+
+    <% if flash[:alert] %>
+      <div class="alert alert-danger d-flex align-items-start gap-2 mb-0" role="alert">
+        <strong>Atenção</strong>
+        <span><%= flash[:alert] %></span>
+      </div>
+    <% end %>
+  </div>
+<% end %>
