@@ -5,4 +5,69 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     get home_index_url
     assert_redirected_to new_session_path
   end
+
+  test "authenticated user without current church is redirected to onboarding" do
+    sign_in_as users(:two)
+
+    get root_path
+
+    assert_redirected_to onboarding_path
+  end
+
+  test "shows active church dashboard when user has current church" do
+    sign_in_to_church_as users(:one), churches(:grace)
+
+    get root_path
+
+    assert_response :success
+    assert_select "h1", "Grace Church"
+    assert_select "[data-testid='current-church-slug']", "grace-church"
+    assert_select "[data-testid='current-church-role']", "church_admin"
+  end
+
+  test "shows active invitation code to church admin" do
+    sign_in_to_church_as users(:one), churches(:grace)
+
+    get root_path
+
+    assert_response :success
+    assert_select "[data-testid='church-invitation-code']", "GRACE-123"
+  end
+
+  test "does not show expired invitation code to church admin" do
+    church_invitation_codes(:grace_volunteer).destroy!
+    sign_in_to_church_as users(:one), churches(:grace)
+
+    get root_path
+
+    assert_response :success
+    assert_select "[data-testid='church-invitation-code']", false
+  end
+
+  test "does not create invitation code while rendering dashboard" do
+    church_invitation_codes(:grace_volunteer).destroy!
+    church_invitation_codes(:expired).destroy!
+    sign_in_to_church_as users(:one), churches(:grace)
+
+    assert_no_difference -> { churches(:grace).church_invitation_codes.count } do
+      get root_path
+    end
+
+    assert_response :success
+    assert_select "[data-testid='church-invitation-code']", false
+  end
+
+  test "does not show invitation code to volunteer" do
+    churches(:grace).church_memberships.create!(
+      user: users(:two),
+      church_role: :volunteer,
+      status: :active
+    )
+    sign_in_to_church_as users(:two), churches(:grace)
+
+    get root_path
+
+    assert_response :success
+    assert_select "[data-testid='church-invitation-code']", false
+  end
 end

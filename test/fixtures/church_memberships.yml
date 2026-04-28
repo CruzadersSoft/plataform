@@ -1,0 +1,13 @@
+grace_admin:
+  church: grace
+  user: one
+  church_role: church_admin
+  status: active
+  joined_at: <%= Time.current %>
+
+platform_grace:
+  church: grace
+  user: platform_admin
+  church_role: church_admin
+  status: active
+  joined_at: <%= Time.current %>

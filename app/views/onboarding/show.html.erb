@@ -1,0 +1,46 @@
+<main class="container py-5" id="conteudo-principal">
+  <%= render "shared/flash" %>
+
+  <header class="mb-4">
+    <p class="text-secondary mb-1">Church Connect</p>
+    <h1 class="h3">Escolha como comecar</h1>
+  </header>
+
+  <div class="row g-4">
+    <section class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h2 class="h5">Criar painel de igreja</h2>
+          <%= form_with url: onboarding_path, scope: :onboarding, local: true do |form| %>
+            <%= form.hidden_field :action_type, value: "create_church" %>
+            <div class="mb-3">
+              <%= label_tag "onboarding_church_name", "Nome da igreja", class: "form-label" %>
+              <%= text_field_tag "onboarding[church][name]", nil, class: "form-control", required: true %>
+            </div>
+            <div class="mb-3">
+              <%= label_tag "onboarding_church_slug", "Slug", class: "form-label" %>
+              <%= text_field_tag "onboarding[church][slug]", nil, class: "form-control", required: true %>
+            </div>
+            <%= form.submit "Criar igreja", class: "btn btn-primary" %>
+          <% end %>
+        </div>
+      </div>
+    </section>
+
+    <section class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h2 class="h5">Entrar em uma igreja</h2>
+          <%= form_with url: onboarding_path, scope: :onboarding, local: true do |form| %>
+            <%= form.hidden_field :action_type, value: "join_church" %>
+            <div class="mb-3">
+              <%= form.label :invitation_code, "Codigo de convite", class: "form-label" %>
+              <%= form.text_field :invitation_code, class: "form-control", required: true %>
+            </div>
+            <%= form.submit "Entrar", class: "btn btn-primary" %>
+          <% end %>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>

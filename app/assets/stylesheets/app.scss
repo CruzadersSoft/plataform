@@ -1,54 +1,63 @@
-// ── Bootstrap Variable Overrides ─────────────────────────────────────────
-$font-family-sans-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+// ── Theme Tokens ─────────────────────────────────────────────────────────
+$app-box-shadow: 0 4px 16px rgba(24, 24, 27, 0.08);
 
-$body-bg:    #f5f5f3;
-$body-color: #18181b;
+:root {
+  --bs-body-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --bs-body-bg: #f5f5f3;
+  --bs-body-color: #18181b;
+  --bs-primary: #1f6feb;
+  --bs-primary-rgb: 31, 111, 235;
+  --bs-secondary: #5c5f66;
+  --bs-success: #1d7a46;
+  --bs-danger: #b13b2e;
+  --bs-warning: #9a6700;
+  --bs-border-color: #d7d8d1;
+  --bs-border-radius: 0.4rem;
+  --bs-border-radius-sm: 0.25rem;
+  --bs-border-radius-lg: 0.6rem;
+  --bs-border-radius-xl: 0.85rem;
+  --bs-box-shadow-sm: 0 1px 2px rgba(24, 24, 27, 0.06);
+  --bs-box-shadow: #{$app-box-shadow};
+}
 
-$primary:   #1f6feb;
-$secondary: #5c5f66;
-$success:   #1d7a46;
-$danger:    #b13b2e;
-$warning:   #9a6700;
+.btn {
+  --bs-btn-padding-y: 0.45rem;
+  --bs-btn-padding-x: 0.9rem;
+  --bs-btn-font-weight: 600;
+  --bs-btn-border-radius: var(--bs-border-radius);
+}
 
-$border-radius:    0.4rem;
-$border-radius-sm: 0.25rem;
-$border-radius-lg: 0.6rem;
-$border-radius-xl: 0.85rem;
+.form-control {
+  --bs-body-bg: #ffffff;
+  --bs-border-color: #d7d8d1;
+}
 
-$box-shadow-sm: 0 1px 2px rgba(24, 24, 27, 0.06);
-$box-shadow:    0 4px 16px rgba(24, 24, 27, 0.08);
+.form-control:focus {
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.12);
+}
 
-$input-bg:                 #ffffff;
-$input-border-color:       #d7d8d1;
-$input-focus-border-color: $primary;
-$input-focus-box-shadow:   0 0 0 3px rgba(31, 111, 235, 0.12);
-$input-padding-y:          0.45rem;
-$input-padding-x:          0.75rem;
-$input-border-radius:      $border-radius;
+.card {
+  --bs-card-bg: #ffffff;
+  --bs-card-border-color: #d7d8d1;
+  --bs-card-border-radius: var(--bs-border-radius-lg);
+  --bs-card-spacer-y: 1.25rem;
+  --bs-card-spacer-x: 1.25rem;
+  box-shadow: var(--bs-box-shadow-sm);
+}
 
-$btn-padding-y:     0.45rem;
-$btn-padding-x:     0.9rem;
-$btn-font-weight:   600;
-$btn-border-radius: $border-radius;
+.badge {
+  --bs-badge-border-radius: 999px;
+  --bs-badge-padding-y: 0.3em;
+  --bs-badge-padding-x: 0.65em;
+  --bs-badge-font-weight: 600;
+}
 
-$card-bg:            #ffffff;
-$card-border-color:  #d7d8d1;
-$card-border-radius: $border-radius-lg;
-$card-spacer-y:      1.25rem;
-$card-spacer-x:      1.25rem;
-$card-box-shadow:    $box-shadow-sm;
-
-$badge-border-radius: 999px;
-$badge-padding-y:     0.3em;
-$badge-padding-x:     0.65em;
-$badge-font-weight:   600;
-
-$alert-border-radius: $border-radius;
-$alert-padding-y:     0.75rem;
-$alert-padding-x:     1rem;
-
-// ── Bootstrap ─────────────────────────────────────────────────────────────
-@import "bootstrap";
+.alert {
+  --bs-alert-border-radius: var(--bs-border-radius);
+  --bs-alert-padding-y: 0.75rem;
+  --bs-alert-padding-x: 1rem;
+}
 
 // ── App Shell ─────────────────────────────────────────────────────────────
 .app-shell {
@@ -250,7 +259,7 @@ $alert-padding-x:     1rem;
 .auth-link { font-weight: 700; }
 
 // ── Responsive ────────────────────────────────────────────────────────────
-@include media-breakpoint-down(lg) {
+@media (max-width: 991.98px) {
   .app-shell { grid-template-columns: 1fr; }
   .app-sidebar { display: none; }
   .app-main { padding: 1.5rem 1.5rem 6rem; }
@@ -261,7 +270,7 @@ $alert-padding-x:     1rem;
     right: 1rem;
     bottom: 1rem;
     left: 1rem;
-    z-index: $zindex-fixed;
+    z-index: 1030;
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 0.5rem;
@@ -270,7 +279,7 @@ $alert-padding-x:     1rem;
     border-radius: 1.3rem;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    box-shadow: $box-shadow;
+    box-shadow: $app-box-shadow;
   }
 
   .app-mobile-nav-link {
@@ -283,7 +292,7 @@ $alert-padding-x:     1rem;
   }
 }
 
-@include media-breakpoint-down(sm) {
+@media (max-width: 575.98px) {
   html { font-size: 15px; }
   .page-title { font-size: 1.9rem; }
 }

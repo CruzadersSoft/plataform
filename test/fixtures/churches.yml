@@ -1,0 +1,11 @@
+grace:
+  name: Grace Church
+  slug: grace-church
+  timezone: America/Sao_Paulo
+  status: active
+
+hope:
+  name: Hope Church
+  slug: hope-church
+  timezone: America/Sao_Paulo
+  status: active

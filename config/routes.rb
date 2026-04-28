@@ -1,8 +1,14 @@
 Rails.application.routes.draw do
+  namespace :platform do
+    root "dashboard#show"
+  end
+
   get "home/index"
+  resource :onboarding, only: %i[show create], controller: :onboarding
+  resource :current_church, only: :update
   resource :session
   resources :passwords, param: :token
-  resources :users, only: [:create, :new]
+  resources :users, only: [ :create, :new ]
 
   root "home#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
