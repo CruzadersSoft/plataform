@@ -21,7 +21,7 @@
         <%= form_with url: department_memberships_path(@department), scope: :department_membership, local: true, class: "row g-3 align-items-end" do |form| %>
           <div class="col-md-6">
             <%= form.label :user_id, "Membro", class: "form-label" %>
-            <%= form.select :user_id, @available_memberships.map { |membership| [membership.user.name || membership.user.email_address, membership.user_id] }, {}, class: "form-select" %>
+            <%= form.select :user_id, @available_memberships.map { |membership| [membership.user.display_name, membership.user_id] }, {}, class: "form-select" %>
           </div>
           <div class="col-md-4">
             <%= form.label :department_role, "Papel", class: "form-label" %>
@@ -52,8 +52,8 @@
               <tr>
                 <td>
                   <div class="member-identity">
-                    <span class="member-avatar" aria-hidden="true"><%= (membership.user.name || membership.user.email_address).first.upcase %></span>
-                    <span><%= membership.user.name || membership.user.email_address %></span>
+                    <span class="member-avatar" aria-hidden="true"><%= membership.user.display_name.first.upcase %></span>
+                    <span><%= membership.user.display_name %></span>
                   </div>
                 </td>
                 <td><%= membership.department_role.humanize %></td>

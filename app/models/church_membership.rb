@@ -11,7 +11,34 @@ class ChurchMembership < ApplicationRecord
 
   before_validation :set_joined_at, if: :active?
 
+  def effective_role_label
+    return church_role.humanize if church_admin?
+
+    led_department_names = led_department_memberships.map { |membership| membership.department.name }
+
+    return "Lider: #{led_department_names.to_sentence}" if led_department_names.any?
+
+    church_role.humanize
+  end
+
+  def leads_department?
+    led_department_memberships.exists?
+  end
+
+  def pure_volunteer?
+    active? && volunteer? && !leads_department?
+  end
+
   private
+    def led_department_memberships
+      user
+        .department_memberships
+        .active
+        .leader
+        .where(church: church)
+        .includes(:department)
+    end
+
     def only_one_active_church_per_user
       return if user_id.blank?
 

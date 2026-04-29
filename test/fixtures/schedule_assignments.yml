@@ -1,0 +1,23 @@
+confirmed_guitar:
+  church: grace
+  event: sunday_service
+  event_requirement: guitar_slot
+  user: one
+  status: confirmed
+  response_at: <%= 2.days.ago %>
+
+pending_vocal:
+  church: grace
+  event: sunday_service
+  event_requirement: vocal_slot
+  user: one
+  status: pending
+
+declined_sound:
+  church: grace
+  event: worship_rehearsal
+  event_requirement: sound_slot
+  user: three
+  status: declined
+  response_at: <%= 1.day.ago %>
+  decline_reason: Indisponível nesse horário

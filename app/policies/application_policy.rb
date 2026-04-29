@@ -43,7 +43,10 @@ class ApplicationPolicy
   end
 
   def department_leader?
-    Current.church_membership&.active? && Current.church_membership&.department_leader?
+    return false unless Current.church_membership&.active? && Current.church.present? && user.present?
+    return true if Current.church_membership.department_leader?
+
+    user.department_memberships.active.leader.exists?(church: Current.church)
   end
 
   class Scope

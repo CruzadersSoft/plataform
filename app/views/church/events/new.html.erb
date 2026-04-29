@@ -1,0 +1,10 @@
+<%= render layout: "church/shared/shell", locals: { active: :events } do %>
+  <header class="page-header">
+    <p class="page-eyebrow"><%= link_to "Eventos", events_path %></p>
+    <h1 class="page-title">Novo Evento</h1>
+  </header>
+
+  <section class="card entity-card p-4" style="max-width: 640px">
+    <%= render "form", event: @event %>
+  </section>
+<% end %>

@@ -9,15 +9,31 @@
     </div>
 
     <nav class="app-nav">
-      <%= link_to root_path, class: "app-nav-link #{'is-active' if active == :home}", aria: (active == :home ? { current: "page" } : nil) do %>
+      <% unless Current.church_membership&.pure_volunteer? %>
+        <%= link_to root_path, class: "app-nav-link #{'is-active' if active == :home}", aria: (active == :home ? { current: "page" } : nil) do %>
+          <span class="app-nav-icon" aria-hidden="true">I</span>
+          Início
+        <% end %>
+        <%= link_to departments_path, class: "app-nav-link #{'is-active' if active == :departments}", aria: (active == :departments ? { current: "page" } : nil) do %>
+          <span class="app-nav-icon" aria-hidden="true">D</span>
+          Departamentos
+        <% end %>
+        <%= link_to events_path, class: "app-nav-link #{'is-active' if active == :events}", aria: (active == :events ? { current: "page" } : nil) do %>
+          <span class="app-nav-icon" aria-hidden="true">E</span>
+          Eventos
+        <% end %>
+      <% end %>
+      <%= link_to assignments_path, class: "app-nav-link #{'is-active' if active == :assignments}", aria: (active == :assignments ? { current: "page" } : nil) do %>
+        <span class="app-nav-icon" aria-hidden="true">C</span>
+        Convocações
+      <% end %>
+      <%# Habilidades fica intencionalmente fora da navegacao por enquanto.
+          A funcionalidade existe na base para uso futuro, mas nao deve ser evoluida agora. %>
+      <%= link_to unavailabilities_path, class: "app-nav-link #{'is-active' if active == :unavailabilities}", aria: (active == :unavailabilities ? { current: "page" } : nil) do %>
         <span class="app-nav-icon" aria-hidden="true">I</span>
-        Início
+        Indisponível
       <% end %>
-      <%= link_to departments_path, class: "app-nav-link #{'is-active' if active == :departments}", aria: (active == :departments ? { current: "page" } : nil) do %>
-        <span class="app-nav-icon" aria-hidden="true">D</span>
-        Departamentos
-      <% end %>
-      <% if policy(ChurchMembership).index? %>
+      <% if !Current.church_membership&.pure_volunteer? && policy(ChurchMembership).index? %>
         <%= link_to members_path, class: "app-nav-link #{'is-active' if active == :members}", aria: (active == :members ? { current: "page" } : nil) do %>
           <span class="app-nav-icon" aria-hidden="true">M</span>
           Membros
@@ -31,7 +47,7 @@
       <div class="church-context">
         <span class="badge text-bg-success rounded-pill"><%= current_church.status.humanize %></span>
         <% if Current.church_membership.present? %>
-          <span class="church-context-role"><%= Current.church_membership.church_role.humanize %></span>
+          <span class="church-context-role"><%= Current.church_membership.effective_role_label %></span>
         <% end %>
       </div>
       <%= button_to "Sair", session_path, method: :delete, class: "btn btn-link text-muted text-decoration-none p-0" %>
@@ -43,15 +59,29 @@
 </div>
 
 <nav class="app-mobile-nav mobile-only" aria-label="Menu inferior">
-  <%= link_to root_path, class: "app-mobile-nav-link #{'is-active' if active == :home}", aria: (active == :home ? { current: "page" } : nil) do %>
+  <% unless Current.church_membership&.pure_volunteer? %>
+    <%= link_to root_path, class: "app-mobile-nav-link #{'is-active' if active == :home}", aria: (active == :home ? { current: "page" } : nil) do %>
+      <span class="app-mobile-nav-icon" aria-hidden="true">I</span>
+      Início
+    <% end %>
+    <%= link_to departments_path, class: "app-mobile-nav-link #{'is-active' if active == :departments}", aria: (active == :departments ? { current: "page" } : nil) do %>
+      <span class="app-mobile-nav-icon" aria-hidden="true">D</span>
+      Departamentos
+    <% end %>
+    <%= link_to events_path, class: "app-mobile-nav-link #{'is-active' if active == :events}", aria: (active == :events ? { current: "page" } : nil) do %>
+      <span class="app-mobile-nav-icon" aria-hidden="true">E</span>
+      Eventos
+    <% end %>
+  <% end %>
+  <%= link_to assignments_path, class: "app-mobile-nav-link #{'is-active' if active == :assignments}", aria: (active == :assignments ? { current: "page" } : nil) do %>
+    <span class="app-mobile-nav-icon" aria-hidden="true">C</span>
+    Convocações
+  <% end %>
+  <%= link_to unavailabilities_path, class: "app-mobile-nav-link #{'is-active' if active == :unavailabilities}", aria: (active == :unavailabilities ? { current: "page" } : nil) do %>
     <span class="app-mobile-nav-icon" aria-hidden="true">I</span>
-    Início
+    Indisponível
   <% end %>
-  <%= link_to departments_path, class: "app-mobile-nav-link #{'is-active' if active == :departments}", aria: (active == :departments ? { current: "page" } : nil) do %>
-    <span class="app-mobile-nav-icon" aria-hidden="true">D</span>
-    Departamentos
-  <% end %>
-  <% if policy(ChurchMembership).index? %>
+  <% if !Current.church_membership&.pure_volunteer? && policy(ChurchMembership).index? %>
     <%= link_to members_path, class: "app-mobile-nav-link #{'is-active' if active == :members}", aria: (active == :members ? { current: "page" } : nil) do %>
       <span class="app-mobile-nav-icon" aria-hidden="true">M</span>
       Membros

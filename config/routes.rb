@@ -16,6 +16,20 @@ Rails.application.routes.draw do
     resources :departments do
       resources :memberships, controller: :department_memberships, only: %i[create destroy]
     end
+    # Habilidades e vagas tecnicas nao sao expostas por enquanto.
+    # EventRequirement permanece como detalhe interno para suportar convocacoes.
+    resources :events do
+      member { patch :publish }
+      resources :assignments, module: :events, only: %i[index create destroy] do
+      end
+    end
+    resources :assignments, only: %i[index show] do
+      member do
+        patch :confirm
+        patch :decline
+      end
+    end
+    resources :unavailabilities, except: :show
   end
 
   root "home#index"

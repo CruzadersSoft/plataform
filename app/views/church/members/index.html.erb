@@ -22,12 +22,12 @@
             <tr data-testid="member-row">
               <td>
                 <div class="member-identity">
-                  <span class="member-avatar" aria-hidden="true"><%= (membership.user.name || membership.user.email_address).first.upcase %></span>
-                  <%= link_to membership.user.name || membership.user.email_address, member_path(membership.user), class: "fw-semibold" %>
+                  <span class="member-avatar" aria-hidden="true"><%= membership.user.display_name.first.upcase %></span>
+                  <%= link_to membership.user.display_name, member_path(membership.user), class: "fw-semibold" %>
                 </div>
               </td>
               <td><%= membership.user.email_address %></td>
-              <td><%= membership.church_role.humanize %></td>
+              <td><%= membership.effective_role_label %></td>
             </tr>
           <% end %>
         </tbody>

@@ -1,0 +1,22 @@
+<%= form_with model: unavailability, url: unavailability.new_record? ? unavailabilities_path : unavailability_path(unavailability) do |f| %>
+  <%= render "shared/auth_errors", resource: unavailability %>
+
+  <div class="row g-3 mb-3">
+    <div class="col-sm-6">
+      <%= f.label :starts_at, "Início", class: "form-label" %>
+      <%= f.datetime_local_field :starts_at, class: "form-control" %>
+    </div>
+    <div class="col-sm-6">
+      <%= f.label :ends_at, "Término", class: "form-label" %>
+      <%= f.datetime_local_field :ends_at, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :reason, "Motivo", class: "form-label" %>
+    <%= f.text_field :reason, class: "form-control", placeholder: "Opcional" %>
+  </div>
+
+  <%= f.submit unavailability.new_record? ? "Registrar" : "Salvar", class: "btn btn-primary" %>
+  <%= link_to "Cancelar", unavailabilities_path, class: "btn btn-outline-secondary ms-2" %>
+<% end %>

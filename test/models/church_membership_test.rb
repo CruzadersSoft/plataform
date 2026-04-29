@@ -43,4 +43,24 @@ class ChurchMembershipTest < ActiveSupport::TestCase
     assert_equal churches(:grace), membership.church
     assert_equal users(:one), membership.user
   end
+
+  test "effective role label shows department leadership for volunteers" do
+    department_memberships(:worship_volunteer).leader!
+
+    assert_equal "Lider: Worship", church_memberships(:grace_volunteer).effective_role_label
+  end
+
+  test "effective role label keeps church admin as the primary role" do
+    assert_equal "Church admin", church_memberships(:grace_admin).effective_role_label
+  end
+
+  test "pure_volunteer is false when volunteer leads a department" do
+    department_memberships(:worship_volunteer).leader!
+
+    assert_not church_memberships(:grace_volunteer).pure_volunteer?
+  end
+
+  test "pure_volunteer is true for active volunteer without department leadership" do
+    assert church_memberships(:grace_volunteer).pure_volunteer?
+  end
 end

@@ -1,0 +1,48 @@
+<%= render layout: "church/shared/shell", locals: { active: :assignments } do %>
+  <header class="page-header entity-header">
+    <div>
+      <p class="page-eyebrow">Painel da igreja</p>
+      <h1 class="page-title">Minhas convocações</h1>
+      <p class="page-description">Eventos para os quais voce foi convocado.</p>
+    </div>
+  </header>
+
+  <section class="card entity-card">
+    <% if @assignments.any? %>
+      <div class="table-responsive">
+        <table class="table entity-table align-middle mb-0">
+          <thead>
+            <tr>
+              <th scope="col">Evento</th>
+              <th scope="col">Departamento</th>
+              <th scope="col">Data</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="text-end">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @assignments.each do |assignment| %>
+              <tr data-testid="assignment-row">
+                <td class="fw-semibold"><%= assignment.event.title %></td>
+                <td><span class="entity-muted"><%= assignment.event.department&.name || "Geral" %></span></td>
+                <td>
+                  <div><%= assignment.event.starts_at.strftime("%d/%m/%Y %H:%M") %></div>
+                  <div class="entity-muted">até <%= assignment.event.ends_at.strftime("%H:%M") %></div>
+                </td>
+                <td>
+                  <% badge_class = assignment.confirmed? ? "text-bg-success" : (assignment.declined? ? "text-bg-danger" : "text-bg-warning") %>
+                  <span class="badge <%= badge_class %>"><%= assignment.status.humanize %></span>
+                </td>
+                <td class="text-end">
+                  <%= link_to assignment.pending? ? "Responder" : "Ver", assignment_path(assignment), class: "btn btn-sm btn-outline-primary" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="p-3 entity-muted">Nenhuma convocação encontrada.</p>
+    <% end %>
+  </section>
+<% end %>

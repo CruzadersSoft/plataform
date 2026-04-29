@@ -20,4 +20,13 @@ class DepartmentTest < ActiveSupport::TestCase
 
     assert department.valid?
   end
+
+  test "scope active returns only active departments" do
+    departments(:welcome).update!(active: false)
+
+    active = Department.where(church: churches(:grace)).active
+
+    assert_not_includes active, departments(:welcome)
+    assert_includes active, departments(:worship)
+  end
 end

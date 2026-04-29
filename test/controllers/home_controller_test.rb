@@ -40,7 +40,10 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", "Grace Church"
     assert_select "[data-testid='current-church-slug']", "grace-church"
-    assert_select "[data-testid='current-church-role']", "church_admin"
+    assert_select "[data-testid='current-church-role']", "Church admin"
+    assert_select "a[href='#{events_path}']", text: "Eventos", minimum: 1
+    assert_select "a[href='#{assignments_path}']", text: "Minhas convocações", minimum: 1
+    assert_select "a[href='#{unavailabilities_path}']", text: "Indisponibilidades", minimum: 1
   end
 
   test "shows active invitation code to church admin" do
@@ -85,7 +88,28 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
 
     get root_path
 
+    assert_redirected_to assignments_path
+    follow_redirect!
     assert_response :success
     assert_select "[data-testid='church-invitation-code']", false
+  end
+
+  test "pure volunteer starts on assignments page" do
+    sign_in_to_church_as users(:three), churches(:grace)
+
+    get root_path
+
+    assert_redirected_to assignments_path
+  end
+
+  test "volunteer who leads a department still sees church dashboard" do
+    department_memberships(:worship_volunteer).leader!
+    sign_in_to_church_as users(:three), churches(:grace)
+
+    get root_path
+
+    assert_response :success
+    assert_select "h1", "Grace Church"
+    assert_select "[data-testid='current-church-role']", "Lider: Worship"
   end
 end

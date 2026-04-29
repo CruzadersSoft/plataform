@@ -1,0 +1,9 @@
+<%= render layout: "church/shared/shell", locals: { active: :unavailabilities } do %>
+  <header class="page-header">
+    <p class="page-eyebrow"><%= link_to "Indisponibilidades", unavailabilities_path %></p>
+    <h1 class="page-title">Editar Indisponibilidade</h1>
+  </header>
+  <section class="card entity-card p-4" style="max-width: 520px">
+    <%= render "form", unavailability: @unavailability %>
+  </section>
+<% end %>

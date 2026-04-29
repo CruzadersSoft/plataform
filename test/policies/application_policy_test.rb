@@ -16,4 +16,16 @@ class ApplicationPolicyTest < ActiveSupport::TestCase
   ensure
     Current.reset
   end
+
+  test "department leader is detected from department membership leadership" do
+    department_memberships(:worship_volunteer).leader!
+    Current.church = churches(:grace)
+    Current.church_membership = church_memberships(:grace_volunteer)
+
+    policy = ApplicationPolicy.new(users(:three), departments(:worship))
+
+    assert policy.department_leader?
+  ensure
+    Current.reset
+  end
 end

@@ -4,4 +4,6 @@ class Department < ApplicationRecord
   has_many :users, through: :department_memberships
 
   validates :name, presence: true, uniqueness: { scope: :church_id }
+
+  scope :active, -> { where(active: true) }
 end

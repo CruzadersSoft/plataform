@@ -1,0 +1,49 @@
+<%= form_with model: event, url: event.new_record? ? events_path : event_path(event) do |f| %>
+  <%= render "shared/auth_errors", resource: event %>
+
+  <div class="mb-3">
+    <%= f.label :title, "Título", class: "form-label" %>
+    <%= f.text_field :title, class: "form-control", placeholder: "Nome do evento" %>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-sm-6">
+      <%= f.label :event_type, "Tipo", class: "form-label" %>
+      <%= f.select :event_type,
+          Event.event_types.keys.map { |k| [k.humanize, k] },
+          { prompt: "Selecione o tipo" },
+          class: "form-select" %>
+    </div>
+    <div class="col-sm-6">
+      <%= f.label :department_id, "Departamento", class: "form-label" %>
+      <%= f.select :department_id,
+          Current.church.departments.active.order(:name).map { |d| [d.name, d.id] },
+          { include_blank: "Geral (sem departamento)" },
+          class: "form-select" %>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-sm-6">
+      <%= f.label :starts_at, "Início", class: "form-label" %>
+      <%= f.datetime_local_field :starts_at, class: "form-control" %>
+    </div>
+    <div class="col-sm-6">
+      <%= f.label :ends_at, "Término", class: "form-label" %>
+      <%= f.datetime_local_field :ends_at, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :location, "Local", class: "form-label" %>
+    <%= f.text_field :location, class: "form-control", placeholder: "Local do evento" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :notes, "Observações", class: "form-label" %>
+    <%= f.text_area :notes, class: "form-control", rows: 3 %>
+  </div>
+
+  <%= f.submit event.new_record? ? "Criar evento" : "Salvar alterações", class: "btn btn-primary" %>
+  <%= link_to "Cancelar", event.new_record? ? events_path : event_path(event), class: "btn btn-outline-secondary ms-2" %>
+<% end %>

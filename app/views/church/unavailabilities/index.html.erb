@@ -1,0 +1,44 @@
+<%= render layout: "church/shared/shell", locals: { active: :unavailabilities } do %>
+  <header class="page-header entity-header">
+    <div>
+      <p class="page-eyebrow">Painel da igreja</p>
+      <h1 class="page-title">Indisponibilidades</h1>
+      <p class="page-description">Períodos em que voluntários estão indisponíveis.</p>
+    </div>
+    <%= link_to "Registrar indisponibilidade", new_unavailability_path, class: "btn btn-primary" %>
+  </header>
+
+  <section class="card entity-card">
+    <div class="table-responsive">
+      <table class="table entity-table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Voluntário</th>
+            <th>Início</th>
+            <th>Término</th>
+            <th>Motivo</th>
+            <th class="text-end">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @unavailabilities.each do |u| %>
+            <tr>
+              <td class="fw-semibold"><%= u.user.display_name %></td>
+              <td><%= u.starts_at.strftime("%d/%m/%Y %H:%M") %></td>
+              <td><%= u.ends_at.strftime("%d/%m/%Y %H:%M") %></td>
+              <td class="entity-muted"><%= u.reason.presence || "—" %></td>
+              <td class="text-end">
+                <% if policy(u).update? %>
+                  <%= link_to "Editar", edit_unavailability_path(u), class: "btn btn-sm btn-outline-primary" %>
+                <% end %>
+                <% if policy(u).destroy? %>
+                  <%= button_to "Cancelar", unavailability_path(u), method: :delete, class: "btn btn-sm btn-outline-danger", data: { turbo_confirm: "Cancelar esta indisponibilidade?" } %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+<% end %>
