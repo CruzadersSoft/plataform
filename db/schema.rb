@@ -10,7 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_29_001924) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_29_100200) do
+  create_table "announcements", force: :cascade do |t|
+    t.integer "audience_type", default: 0, null: false
+    t.text "body", null: false
+    t.integer "church_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "created_by", null: false
+    t.datetime "published_at"
+    t.integer "status", default: 0, null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["church_id"], name: "index_announcements_on_church_id"
+  end
+
   create_table "church_invitation_codes", force: :cascade do |t|
     t.integer "church_id", null: false
     t.integer "church_role", default: 0, null: false
@@ -120,6 +133,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_001924) do
     t.index ["department_id"], name: "index_events_on_department_id"
   end
 
+  create_table "notifications", force: :cascade do |t|
+    t.text "body"
+    t.integer "church_id", null: false
+    t.datetime "created_at", null: false
+    t.string "notification_type", null: false
+    t.datetime "read_at"
+    t.bigint "related_id"
+    t.string "related_type"
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["church_id", "user_id", "read_at"], name: "index_notifications_on_church_id_and_user_id_and_read_at"
+    t.index ["church_id"], name: "index_notifications_on_church_id"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
   create_table "schedule_assignments", force: :cascade do |t|
     t.bigint "assigned_by"
     t.integer "church_id", null: false
@@ -150,6 +179,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_001924) do
     t.index ["church_id"], name: "index_skills_on_church_id"
   end
 
+  create_table "tasks", force: :cascade do |t|
+    t.integer "assigned_user_id"
+    t.integer "church_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "created_by", null: false
+    t.integer "department_id", null: false
+    t.text "description"
+    t.datetime "due_at"
+    t.integer "priority", default: 0, null: false
+    t.integer "status", default: 0, null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assigned_user_id"], name: "index_tasks_on_assigned_user_id"
+    t.index ["church_id", "status", "due_at"], name: "index_tasks_on_church_id_and_status_and_due_at"
+    t.index ["church_id"], name: "index_tasks_on_church_id"
+    t.index ["department_id"], name: "index_tasks_on_department_id"
+  end
+
   create_table "unavailabilities", force: :cascade do |t|
     t.integer "church_id", null: false
     t.datetime "created_at", null: false
@@ -175,6 +222,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_001924) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "announcements", "churches"
   add_foreign_key "church_invitation_codes", "churches"
   add_foreign_key "church_invitation_codes", "users", column: "created_by_id"
   add_foreign_key "church_memberships", "churches"
@@ -189,11 +237,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_001924) do
   add_foreign_key "event_requirements", "skills"
   add_foreign_key "events", "churches"
   add_foreign_key "events", "departments"
+  add_foreign_key "notifications", "churches"
+  add_foreign_key "notifications", "users"
   add_foreign_key "schedule_assignments", "churches"
   add_foreign_key "schedule_assignments", "event_requirements"
   add_foreign_key "schedule_assignments", "events"
   add_foreign_key "schedule_assignments", "users"
   add_foreign_key "skills", "churches"
+  add_foreign_key "tasks", "churches"
+  add_foreign_key "tasks", "departments"
+  add_foreign_key "tasks", "users", column: "assigned_user_id"
   add_foreign_key "unavailabilities", "churches"
   add_foreign_key "unavailabilities", "users"
 end

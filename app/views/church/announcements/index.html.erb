@@ -1,0 +1,66 @@
+<%= render layout: "church/shared/shell", locals: { active: :announcements } do %>
+  <header class="page-header entity-header">
+    <div>
+      <p class="page-eyebrow">Painel da igreja</p>
+      <h1 class="page-title">Comunicados</h1>
+      <p class="page-description">Comunicações internas da igreja.</p>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2">
+      <%= link_to "Todos", announcements_path, class: "btn btn-outline-secondary #{'active' if @status_filter.blank?}" %>
+      <% Announcement.statuses.keys.each do |status| %>
+        <%= link_to status.humanize, announcements_path(status: status), class: "btn btn-outline-secondary #{'active' if @status_filter == status}" %>
+      <% end %>
+      <% if policy(Announcement).create? %>
+        <%= link_to "Novo comunicado", new_announcement_path, class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  </header>
+
+  <section class="card entity-card">
+    <% if @announcements.any? %>
+      <div class="table-responsive">
+        <table class="table entity-table align-middle mb-0">
+          <thead>
+            <tr>
+              <th scope="col">Título</th>
+              <th scope="col">Audiência</th>
+              <th scope="col">Status</th>
+              <th scope="col">Data</th>
+              <th scope="col" class="text-end">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @announcements.each do |announcement| %>
+              <tr data-testid="announcement-row">
+                <td>
+                  <%= link_to announcement.title, announcement_path(announcement), class: "fw-semibold" %>
+                </td>
+                <td>
+                  <span class="entity-muted"><%= announcement.audience_type.humanize %></span>
+                </td>
+                <td>
+                  <% badge_class = announcement.published? ? "text-bg-success" : (announcement.archived? ? "text-bg-secondary" : "text-bg-warning") %>
+                  <span class="badge <%= badge_class %>"><%= announcement.status.humanize %></span>
+                </td>
+                <td>
+                  <span class="entity-muted">
+                    <%= announcement.published_at&.strftime("%d/%m/%Y") || announcement.created_at.strftime("%d/%m/%Y") %>
+                  </span>
+                </td>
+                <td class="text-end">
+                  <%= link_to "Ver", announcement_path(announcement), class: "btn btn-sm btn-outline-primary" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="empty-state empty-state-large">
+        <strong>Nenhum comunicado encontrado</strong>
+        <span>Comunicados desse filtro aparecerão aqui.</span>
+      </div>
+    <% end %>
+  </section>
+<% end %>

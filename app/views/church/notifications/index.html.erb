@@ -1,0 +1,63 @@
+<%= render layout: "church/shared/shell", locals: { active: :notifications } do %>
+  <header class="page-header entity-header">
+    <div>
+      <p class="page-eyebrow">Painel da igreja</p>
+      <h1 class="page-title">Notificações</h1>
+      <p class="page-description">Alertas e atualizações da sua rotina na igreja.</p>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2">
+      <%= link_to "Todas", notifications_path, class: "btn btn-outline-secondary #{'active' if @read_filter.blank?}" %>
+      <%= link_to "Não lidas", notifications_path(read: :unread), class: "btn btn-outline-secondary #{'active' if @read_filter == 'unread'}" %>
+      <%= link_to "Lidas", notifications_path(read: :read), class: "btn btn-outline-secondary #{'active' if @read_filter == 'read'}" %>
+    </div>
+  </header>
+
+  <section class="card entity-card">
+    <% if @notifications.any? %>
+      <div class="table-responsive">
+        <table class="table entity-table align-middle mb-0">
+          <thead>
+            <tr>
+              <th scope="col">Notificação</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Status</th>
+              <th scope="col">Data</th>
+              <th scope="col" class="text-end">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @notifications.each do |notification| %>
+              <tr data-testid="notification-row">
+                <td>
+                  <%= link_to notification.title, notification_path(notification), class: "fw-semibold" %>
+                  <% if notification.body.present? %>
+                    <div class="entity-muted"><%= truncate(notification.body, length: 90) %></div>
+                  <% end %>
+                </td>
+                <td>
+                  <span class="entity-muted"><%= notification.notification_type.humanize %></span>
+                </td>
+                <td>
+                  <% badge_class = notification.read_at.present? ? "text-bg-secondary" : "text-bg-primary" %>
+                  <span class="badge <%= badge_class %>"><%= notification.read_at.present? ? "Lida" : "Nova" %></span>
+                </td>
+                <td>
+                  <span class="entity-muted"><%= notification.created_at.strftime("%d/%m/%Y") %></span>
+                </td>
+                <td class="text-end">
+                  <%= link_to "Ver", notification_path(notification), class: "btn btn-sm btn-outline-primary" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="empty-state empty-state-large">
+        <strong>Nenhuma notificação encontrada</strong>
+        <span>Alertas desse filtro aparecerão aqui.</span>
+      </div>
+    <% end %>
+  </section>
+<% end %>

@@ -1,0 +1,25 @@
+grace_published:
+  church: grace
+  title: Culto de Aniversário
+  body: Celebraremos o aniversário da igreja no próximo domingo com um culto especial.
+  audience_type: all_members
+  status: published
+  published_at: <%= 1.day.ago %>
+  created_by: 1
+
+grace_draft:
+  church: grace
+  title: Reunião de Líderes
+  body: Haverá uma reunião de líderes na próxima semana. Confirme presença.
+  audience_type: leaders_only
+  status: draft
+  created_by: 1
+
+hope_published:
+  church: hope
+  title: Campanha de Missões
+  body: Participe da nossa campanha anual de missões.
+  audience_type: all_members
+  status: published
+  published_at: <%= 2.days.ago %>
+  created_by: 2

@@ -1,0 +1,55 @@
+<%= form_with model: task, url: task.new_record? ? tasks_path : task_path(task) do |f| %>
+  <%= render "shared/auth_errors", resource: task %>
+
+  <div class="mb-3">
+    <%= f.label :title, "Título", class: "form-label" %>
+    <%= f.text_field :title, class: "form-control", placeholder: "Nome da tarefa" %>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-sm-6">
+      <%= f.label :department_id, "Departamento", class: "form-label" %>
+      <%= f.select :department_id,
+          Current.church.departments.active.order(:name).map { |d| [d.name, d.id] },
+          { prompt: "Selecione o departamento" },
+          class: "form-select" %>
+    </div>
+    <div class="col-sm-6">
+      <%= f.label :assigned_user_id, "Atribuir a", class: "form-label" %>
+      <%= f.select :assigned_user_id,
+          Current.church.church_memberships.active.joins(:user).order(Arel.sql("users.name")).map { |m| [m.user.display_name, m.user_id] },
+          { include_blank: "Não atribuído" },
+          class: "form-select" %>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-sm-6">
+      <%= f.label :priority, "Prioridade", class: "form-label" %>
+      <%= f.select :priority,
+          Task.priorities.keys.map { |k| [k.humanize, k] },
+          {},
+          class: "form-select" %>
+    </div>
+    <div class="col-sm-6">
+      <%= f.label :status, "Status", class: "form-label" %>
+      <%= f.select :status,
+          Task.statuses.keys.map { |k| [k.humanize, k] },
+          {},
+          class: "form-select" %>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :due_at, "Prazo", class: "form-label" %>
+    <%= f.date_field :due_at, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :description, "Descrição", class: "form-label" %>
+    <%= f.text_area :description, class: "form-control", rows: 3 %>
+  </div>
+
+  <%= f.submit task.new_record? ? "Criar tarefa" : "Salvar alterações", class: "btn btn-primary" %>
+  <%= link_to "Cancelar", task.new_record? ? tasks_path : task_path(task), class: "btn btn-outline-secondary ms-2" %>
+<% end %>

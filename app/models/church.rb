@@ -9,6 +9,9 @@ class Church < ApplicationRecord
   has_many :event_requirements, dependent: :destroy
   has_many :schedule_assignments, dependent: :destroy
   has_many :unavailabilities, dependent: :destroy
+  has_many :tasks, dependent: :destroy
+  has_many :announcements, dependent: :destroy
+  has_many :notifications, dependent: :destroy
 
   enum :status, { active: 0, inactive: 1, suspended: 2 }
 

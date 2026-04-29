@@ -1,3 +1,5 @@
+<% unread_notifications_count = Current.church.present? && current_user.present? ? Current.church.notifications.unread.where(user: current_user).count : 0 %>
+
 <div class="app-shell church-shell">
   <aside class="app-sidebar" aria-label="Menu principal">
     <div class="app-brand">
@@ -20,23 +22,38 @@
         <% end %>
         <%= link_to events_path, class: "app-nav-link #{'is-active' if active == :events}", aria: (active == :events ? { current: "page" } : nil) do %>
           <span class="app-nav-icon" aria-hidden="true">E</span>
-          Eventos
+          <span class="app-nav-text">Eventos</span>
         <% end %>
       <% end %>
       <%= link_to assignments_path, class: "app-nav-link #{'is-active' if active == :assignments}", aria: (active == :assignments ? { current: "page" } : nil) do %>
         <span class="app-nav-icon" aria-hidden="true">C</span>
-        Convocações
+        <span class="app-nav-text">Convocações</span>
+      <% end %>
+      <%= link_to tasks_path, class: "app-nav-link #{'is-active' if active == :tasks}", aria: (active == :tasks ? { current: "page" } : nil) do %>
+        <span class="app-nav-icon" aria-hidden="true">T</span>
+        <span class="app-nav-text">Tarefas</span>
+      <% end %>
+      <%= link_to announcements_path, class: "app-nav-link #{'is-active' if active == :announcements}", aria: (active == :announcements ? { current: "page" } : nil) do %>
+        <span class="app-nav-icon" aria-hidden="true">A</span>
+        <span class="app-nav-text">Comunicados</span>
+      <% end %>
+      <%= link_to notifications_path, class: "app-nav-link #{'is-active' if active == :notifications}", aria: (active == :notifications ? { current: "page" } : nil) do %>
+        <span class="app-nav-icon" aria-hidden="true">N</span>
+        <span class="app-nav-text">Notificações</span>
+        <% if unread_notifications_count.positive? %>
+          <span class="app-nav-badge" data-testid="unread-notifications-count"><%= unread_notifications_count %></span>
+        <% end %>
       <% end %>
       <%# Habilidades fica intencionalmente fora da navegacao por enquanto.
           A funcionalidade existe na base para uso futuro, mas nao deve ser evoluida agora. %>
       <%= link_to unavailabilities_path, class: "app-nav-link #{'is-active' if active == :unavailabilities}", aria: (active == :unavailabilities ? { current: "page" } : nil) do %>
         <span class="app-nav-icon" aria-hidden="true">I</span>
-        Indisponível
+        <span class="app-nav-text">Indisponível</span>
       <% end %>
       <% if !Current.church_membership&.pure_volunteer? && policy(ChurchMembership).index? %>
         <%= link_to members_path, class: "app-nav-link #{'is-active' if active == :members}", aria: (active == :members ? { current: "page" } : nil) do %>
           <span class="app-nav-icon" aria-hidden="true">M</span>
-          Membros
+          <span class="app-nav-text">Membros</span>
         <% end %>
       <% end %>
     </nav>
@@ -50,7 +67,15 @@
           <span class="church-context-role"><%= Current.church_membership.effective_role_label %></span>
         <% end %>
       </div>
-      <%= button_to "Sair", session_path, method: :delete, class: "btn btn-link text-muted text-decoration-none p-0" %>
+      <div class="app-topbar-actions">
+        <%= link_to notifications_path, class: "topbar-notification-link", aria: { label: "Notificações" } do %>
+          <span aria-hidden="true">N</span>
+          <% if unread_notifications_count.positive? %>
+            <span class="topbar-notification-badge"><%= unread_notifications_count %></span>
+          <% end %>
+        <% end %>
+        <%= button_to "Sair", session_path, method: :delete, class: "btn btn-link text-muted text-decoration-none p-0" %>
+      </div>
     </div>
 
     <%= render "shared/flash" %>
@@ -76,6 +101,23 @@
   <%= link_to assignments_path, class: "app-mobile-nav-link #{'is-active' if active == :assignments}", aria: (active == :assignments ? { current: "page" } : nil) do %>
     <span class="app-mobile-nav-icon" aria-hidden="true">C</span>
     Convocações
+  <% end %>
+  <%= link_to tasks_path, class: "app-mobile-nav-link #{'is-active' if active == :tasks}", aria: (active == :tasks ? { current: "page" } : nil) do %>
+    <span class="app-mobile-nav-icon" aria-hidden="true">T</span>
+    Tarefas
+  <% end %>
+  <%= link_to announcements_path, class: "app-mobile-nav-link #{'is-active' if active == :announcements}", aria: (active == :announcements ? { current: "page" } : nil) do %>
+    <span class="app-mobile-nav-icon" aria-hidden="true">A</span>
+    Comunicados
+  <% end %>
+  <%= link_to notifications_path, class: "app-mobile-nav-link #{'is-active' if active == :notifications}", aria: (active == :notifications ? { current: "page" } : nil) do %>
+    <span class="app-mobile-nav-icon app-mobile-nav-icon-with-badge" aria-hidden="true">
+      N
+      <% if unread_notifications_count.positive? %>
+        <span class="app-mobile-nav-badge"><%= unread_notifications_count %></span>
+      <% end %>
+    </span>
+    Notificações
   <% end %>
   <%= link_to unavailabilities_path, class: "app-mobile-nav-link #{'is-active' if active == :unavailabilities}", aria: (active == :unavailabilities ? { current: "page" } : nil) do %>
     <span class="app-mobile-nav-icon" aria-hidden="true">I</span>

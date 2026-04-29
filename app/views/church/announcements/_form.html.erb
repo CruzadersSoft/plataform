@@ -1,0 +1,24 @@
+<%= form_with model: announcement, url: announcement.new_record? ? announcements_path : announcement_path(announcement) do |f| %>
+  <%= render "shared/auth_errors", resource: announcement %>
+
+  <div class="mb-3">
+    <%= f.label :title, "Título", class: "form-label" %>
+    <%= f.text_field :title, class: "form-control", placeholder: "Título do comunicado" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :audience_type, "Audiência", class: "form-label" %>
+    <%= f.select :audience_type,
+        Announcement.audience_types.keys.map { |k| [k.humanize, k] },
+        {},
+        class: "form-select" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :body, "Conteúdo", class: "form-label" %>
+    <%= f.text_area :body, class: "form-control", rows: 6, placeholder: "Escreva o comunicado aqui..." %>
+  </div>
+
+  <%= f.submit announcement.new_record? ? "Criar comunicado" : "Salvar alterações", class: "btn btn-primary" %>
+  <%= link_to "Cancelar", announcement.new_record? ? announcements_path : announcement_path(announcement), class: "btn btn-outline-secondary ms-2" %>
+<% end %>
