@@ -46,6 +46,19 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href='#{unavailabilities_path}']", text: "Indisponibilidades", minimum: 1
   end
 
+  test "shows communication and task dashboard widgets" do
+    sign_in_to_church_as users(:one), churches(:grace)
+
+    get root_path
+
+    assert_response :success
+    assert_select "[data-testid='dashboard-pending-tasks-count']", "1"
+    assert_select "[data-testid='dashboard-unread-notifications-count']", "0"
+    assert_select "a[href='#{tasks_path}']", text: "Tarefas", minimum: 1
+    assert_select "a[href='#{announcements_path}']", text: "Comunicados", minimum: 1
+    assert_select "a[href='#{notifications_path}']", text: "Notificações", minimum: 1
+  end
+
   test "shows active invitation code to church admin" do
     sign_in_to_church_as users(:one), churches(:grace)
 

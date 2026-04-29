@@ -4,7 +4,7 @@
       <p class="page-eyebrow">Painel da igreja</p>
       <h1 class="page-title"><%= @church.name %></h1>
       <p class="page-description">
-        Este painel esta conectado ao tenant ativo e sera a base dos modulos operacionais da igreja.
+        Visão operacional da igreja ativa, com tarefas, comunicados e notificações recentes.
       </p>
     </div>
 
@@ -13,16 +13,130 @@
     </div>
   </header>
 
-  <section class="card" id="proximos-passos">
+  <section class="dashboard-summary" aria-label="Resumo operacional">
+    <%= link_to tasks_path(status: :pending), class: "dashboard-metric" do %>
+      <span class="dashboard-metric-label">Tarefas abertas</span>
+      <strong class="dashboard-metric-value" data-testid="dashboard-pending-tasks-count"><%= @pending_tasks_count %></strong>
+    <% end %>
+
+    <%= link_to notifications_path(read: :unread), class: "dashboard-metric" do %>
+      <span class="dashboard-metric-label">Notificações novas</span>
+      <strong class="dashboard-metric-value" data-testid="dashboard-unread-notifications-count"><%= @unread_notifications_count %></strong>
+    <% end %>
+
+    <div class="dashboard-metric">
+      <span class="dashboard-metric-label">Tenant ativo</span>
+      <strong class="dashboard-metric-value dashboard-metric-text" data-testid="current-church-slug"><%= @church.slug %></strong>
+    </div>
+  </section>
+
+  <section class="dashboard-grid" aria-label="Atalhos operacionais">
+    <article class="card dashboard-card">
+      <div class="card-body">
+        <div class="dashboard-card-header">
+          <div>
+            <h2 class="card-title h5">Tarefas pendentes</h2>
+            <p class="entity-muted mb-0">Itens em aberto por departamento.</p>
+          </div>
+          <%= link_to "Ver todas", tasks_path, class: "btn btn-sm btn-outline-primary" %>
+        </div>
+
+        <% if @pending_tasks.any? %>
+          <div class="dashboard-list">
+            <% @pending_tasks.each do |task| %>
+              <%= link_to task_path(task), class: "dashboard-list-item" do %>
+                <span>
+                  <strong><%= task.title %></strong>
+                  <span><%= task.department.name %></span>
+                </span>
+                <span class="badge <%= task.high? ? 'text-bg-danger' : (task.medium? ? 'text-bg-warning' : 'text-bg-secondary') %>"><%= task.priority.humanize %></span>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="empty-state">
+            <strong>Nenhuma tarefa aberta</strong>
+            <span>As próximas demandas dos departamentos aparecerão aqui.</span>
+          </div>
+        <% end %>
+      </div>
+    </article>
+
+    <article class="card dashboard-card">
+      <div class="card-body">
+        <div class="dashboard-card-header">
+          <div>
+            <h2 class="card-title h5">Comunicados recentes</h2>
+            <p class="entity-muted mb-0">Últimas comunicações publicadas ou em preparo.</p>
+          </div>
+          <%= link_to "Ver todos", announcements_path, class: "btn btn-sm btn-outline-primary" %>
+        </div>
+
+        <% if @recent_announcements.any? %>
+          <div class="dashboard-list">
+            <% @recent_announcements.each do |announcement| %>
+              <%= link_to announcement_path(announcement), class: "dashboard-list-item" do %>
+                <span>
+                  <strong><%= announcement.title %></strong>
+                  <span><%= announcement.audience_type.humanize %></span>
+                </span>
+                <% badge_class = announcement.published? ? "text-bg-success" : (announcement.archived? ? "text-bg-secondary" : "text-bg-warning") %>
+                <span class="badge <%= badge_class %>"><%= announcement.status.humanize %></span>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="empty-state">
+            <strong>Nenhum comunicado</strong>
+            <span>Comunicados internos aparecerão neste espaço.</span>
+          </div>
+        <% end %>
+      </div>
+    </article>
+
+    <article class="card dashboard-card">
+      <div class="card-body">
+        <div class="dashboard-card-header">
+          <div>
+            <h2 class="card-title h5">Notificações novas</h2>
+            <p class="entity-muted mb-0">Alertas direcionados para você.</p>
+          </div>
+          <%= link_to "Ver todas", notifications_path, class: "btn btn-sm btn-outline-primary" %>
+        </div>
+
+        <% if @unread_notifications.any? %>
+          <div class="dashboard-list">
+            <% @unread_notifications.each do |notification| %>
+              <%= link_to notification_path(notification), class: "dashboard-list-item" do %>
+                <span>
+                  <strong><%= notification.title %></strong>
+                  <span><%= notification.notification_type.humanize %></span>
+                </span>
+                <span class="badge text-bg-primary">Nova</span>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="empty-state">
+            <strong>Nada novo</strong>
+            <span>Quando houver uma atualização importante, ela ficará visível aqui.</span>
+          </div>
+        <% end %>
+      </div>
+    </article>
+  </section>
+
+  <section class="card dashboard-card mt-4" id="dados-da-igreja">
     <div class="card-body">
-      <h2 class="card-title h5">Dados da igreja</h2>
-      <p class="card-text text-secondary">Informacoes basicas do tenant ativo nesta sessao.</p>
+      <div class="dashboard-card-header">
+        <div>
+          <h2 class="card-title h5">Dados da igreja</h2>
+          <p class="entity-muted mb-0">Informações básicas do tenant ativo nesta sessão.</p>
+        </div>
+      </div>
 
       <dl class="row mb-0">
-        <dt class="col-sm-3">Slug</dt>
-        <dd class="col-sm-9" data-testid="current-church-slug"><%= @church.slug %></dd>
-
-        <dt class="col-sm-3">Fuso horario</dt>
+        <dt class="col-sm-3">Fuso horário</dt>
         <dd class="col-sm-9"><%= @church.timezone %></dd>
 
         <dt class="col-sm-3">Papel</dt>
@@ -31,24 +145,19 @@
 
       <% if @invitation_code.present? %>
         <div class="alert alert-success mt-4" role="note">
-          <div class="fw-semibold">Codigo para entrar na igreja</div>
+          <div class="fw-semibold">Código para entrar na igreja</div>
           <div class="fs-4 fw-bold mt-1" data-testid="church-invitation-code"><%= @invitation_code.code %></div>
-          <div class="text-secondary mt-1">Compartilhe este codigo com quem deve entrar como voluntario.</div>
+          <div class="text-secondary mt-1">Compartilhe este código com quem deve entrar como voluntário.</div>
         </div>
       <% end %>
-
-      <div class="alert alert-primary d-flex align-items-start gap-3 mt-3" role="note">
-        <span aria-hidden="true">i</span>
-        <div>
-          <strong>Dashboard inicial</strong>
-          <div class="mt-1 text-secondary">Use os modulos de membros, departamentos, eventos e escalas para operar a igreja.</div>
-        </div>
-      </div>
 
       <div class="d-flex flex-wrap gap-2 mt-4">
         <%= link_to "Departamentos", departments_path, class: "btn btn-primary" %>
         <%= link_to "Eventos", events_path, class: "btn btn-outline-primary" %>
         <%= link_to "Minhas convocações", assignments_path, class: "btn btn-outline-primary" %>
+        <%= link_to "Tarefas", tasks_path, class: "btn btn-outline-primary" %>
+        <%= link_to "Comunicados", announcements_path, class: "btn btn-outline-primary" %>
+        <%= link_to "Notificações", notifications_path, class: "btn btn-outline-primary" %>
         <%= link_to "Indisponibilidades", unavailabilities_path, class: "btn btn-outline-primary" %>
         <% if policy(ChurchMembership).index? %>
           <%= link_to "Membros", members_path, class: "btn btn-outline-primary" %>

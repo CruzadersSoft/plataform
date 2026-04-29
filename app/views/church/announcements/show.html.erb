@@ -1,0 +1,43 @@
+<%= render layout: "church/shared/shell", locals: { active: :announcements } do %>
+  <header class="page-header entity-header">
+    <div>
+      <p class="page-eyebrow"><%= link_to "Comunicados", announcements_path %></p>
+      <h1 class="page-title"><%= @announcement.title %></h1>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2">
+      <% if policy(@announcement).publish? && @announcement.draft? %>
+        <%= button_to "Publicar", publish_announcement_path(@announcement), method: :patch,
+            class: "btn btn-success",
+            data: { turbo_confirm: "Publicar este comunicado para os membros?" } %>
+      <% end %>
+      <% if policy(@announcement).update? %>
+        <%= link_to "Editar", edit_announcement_path(@announcement), class: "btn btn-outline-secondary" %>
+      <% end %>
+      <% if policy(@announcement).destroy? && !@announcement.archived? %>
+        <%= button_to "Arquivar", announcement_path(@announcement), method: :delete,
+            class: "btn btn-outline-secondary",
+            data: { turbo_confirm: "Arquivar este comunicado?" } %>
+      <% end %>
+    </div>
+  </header>
+
+  <section class="card entity-card">
+    <div class="card-body">
+      <div class="d-flex gap-2 mb-3">
+        <% badge_class = @announcement.published? ? "text-bg-success" : (@announcement.archived? ? "text-bg-secondary" : "text-bg-warning") %>
+        <span class="badge <%= badge_class %>"><%= @announcement.status.humanize %></span>
+        <span class="badge text-bg-secondary"><%= @announcement.audience_type.humanize %></span>
+      </div>
+
+      <p class="mb-3"><%= simple_format(@announcement.body) %></p>
+
+      <p class="entity-muted mb-0">
+        Criado em <%= @announcement.created_at.strftime("%d/%m/%Y") %>
+        <% if @announcement.published_at.present? %>
+          · Publicado em <%= @announcement.published_at.strftime("%d/%m/%Y") %>
+        <% end %>
+      </p>
+    </div>
+  </section>
+<% end %>

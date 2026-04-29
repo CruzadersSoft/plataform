@@ -1,0 +1,23 @@
+grace_unread:
+  church: grace
+  user: three
+  notification_type: announcement
+  title: Novo comunicado publicado
+  body: O comunicado "Culto de Aniversário" foi publicado.
+  related_type: Announcement
+  related_id: 1
+
+grace_read:
+  church: grace
+  user: three
+  notification_type: assignment
+  title: Você foi convocado
+  body: Você foi convocado para o culto dominical.
+  read_at: <%= 1.day.ago %>
+
+hope_notification:
+  church: hope
+  user: two
+  notification_type: announcement
+  title: Campanha de Missões publicada
+  body: Um novo comunicado foi publicado.

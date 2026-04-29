@@ -218,6 +218,27 @@ dl.row dd {
   }
 }
 
+.app-nav-text {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.app-nav-badge,
+.topbar-notification-badge,
+.app-mobile-nav-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: #b13b2e;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
 .app-nav-icon,
 .app-mobile-nav-icon {
   flex-shrink: 0;
@@ -244,6 +265,32 @@ dl.row dd {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid rgba(215, 216, 209, 0.8);
+}
+
+.app-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.topbar-notification-link {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  color: $app-ink;
+  text-decoration: none;
+  font-weight: 800;
+  background: #ffffff;
+}
+
+.topbar-notification-badge {
+  position: absolute;
+  top: -0.45rem;
+  right: -0.45rem;
 }
 
 .church-context {
@@ -357,6 +404,126 @@ dl.row dd {
   font-size: 0.92rem;
 }
 
+.empty-state {
+  display: grid;
+  gap: 0.3rem;
+  padding: 1rem;
+  border: 1px dashed var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  background: $app-surface-soft;
+  color: $app-muted;
+
+  strong {
+    color: $app-ink;
+  }
+}
+
+.empty-state-large {
+  margin: 1rem;
+  min-height: 10rem;
+  place-items: center;
+  text-align: center;
+}
+
+.dashboard-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.dashboard-metric {
+  display: grid;
+  gap: 0.35rem;
+  min-height: 6rem;
+  padding: 1rem;
+  border: 1px solid rgba(215, 216, 209, 0.95);
+  border-radius: var(--bs-border-radius-lg);
+  background: #ffffff;
+  color: $app-ink;
+  text-decoration: none;
+  box-shadow: var(--bs-box-shadow-sm);
+}
+
+.dashboard-metric[href]:hover {
+  border-color: rgba(31, 111, 235, 0.45);
+  color: $app-ink;
+}
+
+.dashboard-metric-label {
+  color: $app-muted;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.dashboard-metric-value {
+  align-self: end;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.dashboard-metric-text {
+  overflow-wrap: anywhere;
+  font-size: 1.15rem;
+  line-height: 1.2;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.dashboard-card {
+  min-width: 0;
+}
+
+.dashboard-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.dashboard-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.dashboard-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  min-height: 3.35rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid #ecece6;
+  color: $app-ink;
+  text-decoration: none;
+
+  > span:first-child {
+    display: grid;
+    min-width: 0;
+
+    strong,
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    span {
+      color: $app-muted;
+      font-size: 0.88rem;
+    }
+  }
+}
+
+.dashboard-list-item:hover {
+  color: var(--bs-primary);
+}
+
 .assignment-response-actions {
   justify-content: flex-end;
 }
@@ -438,8 +605,13 @@ dl.row dd {
 @media (max-width: 991.98px) {
   .app-shell { grid-template-columns: 1fr; }
   .app-sidebar { display: none; }
-  .app-main { padding: 1.5rem 1.5rem 6rem; }
+  .app-main { padding: 1.5rem 1.5rem 10rem; }
   .mobile-only { display: block; }
+
+  .dashboard-summary,
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
 
   .app-mobile-nav {
     position: fixed;
@@ -466,11 +638,36 @@ dl.row dd {
     font-size: 0.82rem;
     text-align: center;
   }
+
+  .app-mobile-nav-icon-with-badge {
+    position: relative;
+  }
+
+  .app-mobile-nav-badge {
+    position: absolute;
+    top: -0.55rem;
+    right: -0.75rem;
+  }
 }
 
 @media (max-width: 575.98px) {
   html { font-size: 15px; }
-  .app-main { padding: 1.25rem 1rem 6rem; }
+  .app-main { padding: 1.25rem 1rem 11rem; }
   .page-title { font-size: 1.55rem; }
   .table > :not(caption) > * > * { padding: 0.75rem; }
+
+  .app-mobile-nav {
+    right: 0.75rem;
+    bottom: 0.75rem;
+    left: 0.75rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.35rem;
+    padding: 0.5rem;
+  }
+
+  .app-mobile-nav-link {
+    min-height: 3.45rem;
+    padding: 0.55rem 0.25rem;
+    font-size: 0.72rem;
+  }
 }

@@ -1,0 +1,76 @@
+<%= render layout: "church/shared/shell", locals: { active: :tasks } do %>
+  <header class="page-header entity-header">
+    <div>
+      <p class="page-eyebrow">Painel da igreja</p>
+      <h1 class="page-title">Tarefas</h1>
+      <p class="page-description">Tarefas operacionais dos departamentos.</p>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2">
+      <%= link_to "Todas", tasks_path, class: "btn btn-outline-secondary #{'active' if @status_filter.blank?}" %>
+      <% Task.statuses.keys.each do |status| %>
+        <%= link_to status.humanize, tasks_path(status: status), class: "btn btn-outline-secondary #{'active' if @status_filter == status}" %>
+      <% end %>
+      <% if policy(Task).create? %>
+        <%= link_to "Nova tarefa", new_task_path, class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  </header>
+
+  <section class="card entity-card">
+    <% if @tasks.any? %>
+      <div class="table-responsive">
+        <table class="table entity-table align-middle mb-0">
+          <thead>
+            <tr>
+              <th scope="col">Tarefa</th>
+              <th scope="col">Departamento</th>
+              <th scope="col">Prioridade</th>
+              <th scope="col">Prazo</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="text-end">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @tasks.each do |task| %>
+              <tr data-testid="task-row">
+                <td>
+                  <%= link_to task.title, task_path(task), class: "fw-semibold" %>
+                  <% if task.assigned_user.present? %>
+                    <div class="entity-muted"><%= task.assigned_user.display_name %></div>
+                  <% end %>
+                </td>
+                <td><%= task.department.name %></td>
+                <td>
+                  <% priority_class = task.high? ? "text-bg-danger" : (task.medium? ? "text-bg-warning" : "text-bg-secondary") %>
+                  <span class="badge <%= priority_class %>"><%= task.priority.humanize %></span>
+                </td>
+                <td>
+                  <% if task.due_at.present? %>
+                    <span class="<%= task.due_at.past? && !task.done? && !task.cancelled? ? 'text-danger fw-semibold' : '' %>">
+                      <%= task.due_at.strftime("%d/%m/%Y") %>
+                    </span>
+                  <% else %>
+                    <span class="entity-muted">—</span>
+                  <% end %>
+                </td>
+                <td>
+                  <% status_class = task.done? ? "text-bg-success" : (task.cancelled? ? "text-bg-danger" : (task.in_progress? ? "text-bg-primary" : "text-bg-secondary")) %>
+                  <span class="badge <%= status_class %>"><%= task.status.humanize %></span>
+                </td>
+                <td class="text-end">
+                  <%= link_to "Ver", task_path(task), class: "btn btn-sm btn-outline-primary" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="empty-state empty-state-large">
+        <strong>Nenhuma tarefa encontrada</strong>
+        <span>Quando houver uma tarefa nesse filtro, ela aparecerá aqui.</span>
+      </div>
+    <% end %>
+  </section>
+<% end %>

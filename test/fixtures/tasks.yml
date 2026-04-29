@@ -1,0 +1,27 @@
+grace_pending:
+  church: grace
+  department: welcome
+  title: Preparar sala de recepção
+  description: Organizar cadeiras e materiais de boas-vindas
+  priority: medium
+  status: pending
+  due_at: <%= 7.days.from_now %>
+  created_by: 1
+
+grace_done:
+  church: grace
+  department: worship
+  title: Afinar instrumentos
+  priority: low
+  status: done
+  due_at: <%= 2.days.ago %>
+  created_by: 1
+
+hope_task:
+  church: hope
+  department: hope_care
+  title: Visita pastoral
+  priority: high
+  status: pending
+  due_at: <%= 3.days.from_now %>
+  created_by: 2

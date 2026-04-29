@@ -30,6 +30,11 @@ Rails.application.routes.draw do
       end
     end
     resources :unavailabilities, except: :show
+    resources :tasks
+    resources :announcements do
+      member { patch :publish }
+    end
+    resources :notifications, only: %i[index show update]
   end
 
   root "home#index"
