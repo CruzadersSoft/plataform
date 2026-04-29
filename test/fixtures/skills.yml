@@ -1,0 +1,17 @@
+guitar:
+  church: grace
+  name: Guitarra
+  description: Guitarra elétrica e base
+  active: true
+
+vocals:
+  church: grace
+  name: Vocal
+  description: Canto e ministração
+  active: true
+
+sound:
+  church: hope
+  name: Sonoplastia
+  description: Operação de som
+  active: true

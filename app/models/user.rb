@@ -12,4 +12,8 @@ class User < ApplicationRecord
   validates :email_address, presence: true, uniqueness: true
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
+
+  def display_name
+    name.presence || email_address
+  end
 end

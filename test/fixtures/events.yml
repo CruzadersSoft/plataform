@@ -1,0 +1,32 @@
+sunday_service:
+  church: grace
+  department: worship
+  title: Culto Dominical
+  event_type: service
+  starts_at: <%= 1.week.from_now.beginning_of_day + 10.hours %>
+  ends_at: <%= 1.week.from_now.beginning_of_day + 12.hours %>
+  location: Sede Principal
+  status: published
+  notes: Culto regular da semana
+  created_by: 1
+
+worship_rehearsal:
+  church: grace
+  department: worship
+  title: Ensaio do Louvor
+  event_type: rehearsal
+  starts_at: <%= 3.days.from_now.beginning_of_day + 19.hours %>
+  ends_at: <%= 3.days.from_now.beginning_of_day + 21.hours %>
+  location: Sala de Louvor
+  status: draft
+  created_by: 1
+
+hope_meeting:
+  church: hope
+  title: Reunião de Líderes
+  event_type: meeting
+  starts_at: <%= 2.days.from_now.beginning_of_day + 9.hours %>
+  ends_at: <%= 2.days.from_now.beginning_of_day + 11.hours %>
+  location: Sala de Reuniões
+  status: published
+  created_by: 1

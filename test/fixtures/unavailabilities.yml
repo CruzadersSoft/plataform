@@ -1,0 +1,31 @@
+user_one_vacation:
+  church: grace
+  user: one
+  starts_at: <%= 2.weeks.from_now.beginning_of_day %>
+  ends_at: <%= 3.weeks.from_now.end_of_day %>
+  reason: Férias
+  status: active
+
+user_two_trip:
+  church: grace
+  user: two
+  starts_at: <%= 5.days.from_now.beginning_of_day %>
+  ends_at: <%= 6.days.from_now.end_of_day %>
+  reason: Viagem
+  status: active
+
+user_one_old:
+  church: grace
+  user: one
+  starts_at: <%= 2.weeks.ago.beginning_of_day %>
+  ends_at: <%= 1.week.ago.end_of_day %>
+  reason: Afastamento
+  status: cancelled
+
+user_three_travel:
+  church: grace
+  user: three
+  starts_at: <%= 10.days.from_now.beginning_of_day %>
+  ends_at: <%= 12.days.from_now.end_of_day %>
+  reason: Viagem pessoal
+  status: active

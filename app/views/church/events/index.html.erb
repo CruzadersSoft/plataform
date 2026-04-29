@@ -1,0 +1,54 @@
+<%= render layout: "church/shared/shell", locals: { active: :events } do %>
+  <header class="page-header entity-header">
+    <div>
+      <p class="page-eyebrow">Painel da igreja</p>
+      <h1 class="page-title">Eventos</h1>
+      <p class="page-description">Agenda e escalas da igreja.</p>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2">
+      <%# Habilidades esta pausada intencionalmente; nao expor atalhos nem evoluir esta tela por enquanto. %>
+      <% if policy(Event).create? %>
+        <%= link_to "Novo evento", new_event_path, class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  </header>
+
+  <section class="card entity-card">
+    <div class="table-responsive">
+      <table class="table entity-table align-middle mb-0">
+        <thead>
+          <tr>
+            <th scope="col">Evento</th>
+            <th scope="col">Data</th>
+            <th scope="col">Local</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="text-end">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @events.each do |event| %>
+            <tr data-testid="event-row">
+              <td>
+                <%= link_to event.title, event_path(event), class: "fw-semibold" %>
+                <div class="entity-muted"><%= event.event_type.humanize %></div>
+              </td>
+              <td>
+                <div><%= l event.starts_at, format: :short rescue event.starts_at.strftime("%d/%m/%Y %H:%M") %></div>
+                <div class="entity-muted">até <%= event.ends_at.strftime("%H:%M") %></div>
+              </td>
+              <td><span class="entity-muted"><%= event.location.presence || "Não informado" %></span></td>
+              <td>
+                <% badge_class = event.published? ? "text-bg-success" : (event.cancelled? ? "text-bg-danger" : "text-bg-secondary") %>
+                <span class="badge <%= badge_class %>"><%= event.status.humanize %></span>
+              </td>
+              <td class="text-end">
+                <%= link_to "Ver", event_path(event), class: "btn btn-sm btn-outline-primary" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+<% end %>

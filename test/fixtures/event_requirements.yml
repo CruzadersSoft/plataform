@@ -1,0 +1,22 @@
+guitar_slot:
+  church: grace
+  event: sunday_service
+  skill: guitar
+  role_name: Guitarra
+  required_quantity: 2
+  priority: 1
+
+vocal_slot:
+  church: grace
+  event: sunday_service
+  role_name: Vocal Lead
+  required_quantity: 1
+  priority: 1
+
+sound_slot:
+  church: grace
+  event: worship_rehearsal
+  skill: guitar
+  role_name: Som
+  required_quantity: 1
+  priority: 2

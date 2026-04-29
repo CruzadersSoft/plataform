@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_28_150300) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_29_001924) do
   create_table "church_invitation_codes", force: :cascade do |t|
     t.integer "church_id", null: false
     t.integer "church_role", default: 0, null: false
@@ -86,6 +86,84 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_28_150300) do
     t.index ["church_id"], name: "index_departments_on_church_id"
   end
 
+  create_table "event_requirements", force: :cascade do |t|
+    t.integer "church_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "event_id", null: false
+    t.text "notes"
+    t.integer "priority", default: 1
+    t.integer "required_quantity", null: false
+    t.string "role_name", null: false
+    t.integer "skill_id"
+    t.datetime "updated_at", null: false
+    t.index ["church_id", "event_id"], name: "index_event_requirements_on_church_id_and_event_id"
+    t.index ["church_id"], name: "index_event_requirements_on_church_id"
+    t.index ["event_id"], name: "index_event_requirements_on_event_id"
+    t.index ["skill_id"], name: "index_event_requirements_on_skill_id"
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.integer "church_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "created_by"
+    t.integer "department_id"
+    t.datetime "ends_at", null: false
+    t.integer "event_type", null: false
+    t.string "location"
+    t.text "notes"
+    t.datetime "starts_at", null: false
+    t.integer "status", default: 0, null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["church_id", "starts_at"], name: "index_events_on_church_id_and_starts_at"
+    t.index ["church_id"], name: "index_events_on_church_id"
+    t.index ["department_id"], name: "index_events_on_department_id"
+  end
+
+  create_table "schedule_assignments", force: :cascade do |t|
+    t.bigint "assigned_by"
+    t.integer "church_id", null: false
+    t.datetime "created_at", null: false
+    t.text "decline_reason"
+    t.integer "event_id", null: false
+    t.integer "event_requirement_id", null: false
+    t.datetime "response_at"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["church_id", "event_id", "status"], name: "idx_on_church_id_event_id_status_c5a6f0972d"
+    t.index ["church_id"], name: "index_schedule_assignments_on_church_id"
+    t.index ["event_id"], name: "index_schedule_assignments_on_event_id"
+    t.index ["event_requirement_id", "user_id"], name: "index_schedule_assignments_on_event_requirement_id_and_user_id", unique: true
+    t.index ["event_requirement_id"], name: "index_schedule_assignments_on_event_requirement_id"
+    t.index ["user_id"], name: "index_schedule_assignments_on_user_id"
+  end
+
+  create_table "skills", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.integer "church_id", null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["church_id", "name"], name: "index_skills_on_church_id_and_name", unique: true
+    t.index ["church_id"], name: "index_skills_on_church_id"
+  end
+
+  create_table "unavailabilities", force: :cascade do |t|
+    t.integer "church_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "ends_at", null: false
+    t.string "reason"
+    t.datetime "starts_at", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["church_id", "user_id"], name: "index_unavailabilities_on_church_id_and_user_id"
+    t.index ["church_id"], name: "index_unavailabilities_on_church_id"
+    t.index ["user_id"], name: "index_unavailabilities_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email_address", null: false
@@ -106,4 +184,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_28_150300) do
   add_foreign_key "department_memberships", "departments"
   add_foreign_key "department_memberships", "users"
   add_foreign_key "departments", "churches"
+  add_foreign_key "event_requirements", "churches"
+  add_foreign_key "event_requirements", "events"
+  add_foreign_key "event_requirements", "skills"
+  add_foreign_key "events", "churches"
+  add_foreign_key "events", "departments"
+  add_foreign_key "schedule_assignments", "churches"
+  add_foreign_key "schedule_assignments", "event_requirements"
+  add_foreign_key "schedule_assignments", "events"
+  add_foreign_key "schedule_assignments", "users"
+  add_foreign_key "skills", "churches"
+  add_foreign_key "unavailabilities", "churches"
+  add_foreign_key "unavailabilities", "users"
 end

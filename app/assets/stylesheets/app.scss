@@ -357,6 +357,18 @@ dl.row dd {
   font-size: 0.92rem;
 }
 
+.assignment-response-actions {
+  justify-content: flex-end;
+}
+
+.assignment-response-form {
+  flex-wrap: wrap;
+
+  .form-control {
+    width: min(11rem, 100%);
+  }
+}
+
 // ── Auth Layout ───────────────────────────────────────────────────────────
 .auth-page {
   min-height: 100vh;
@@ -436,7 +448,7 @@ dl.row dd {
     left: 1rem;
     z-index: 1030;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(4.25rem, 1fr));
     gap: 0.5rem;
     padding: 0.6rem;
     border: 1px solid var(--bs-border-color);

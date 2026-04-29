@@ -1,0 +1,47 @@
+<%= render layout: "church/shared/shell", locals: { active: :assignments } do %>
+  <header class="page-header entity-header">
+    <div>
+      <p class="page-eyebrow"><%= link_to "Minhas convocações", assignments_path %> / <%= @assignment.event.title %></p>
+      <h1 class="page-title"><%= @assignment.event.title %></h1>
+      <p class="page-description">
+        <%= @assignment.event.starts_at.strftime("%d/%m/%Y %H:%M") %> – <%= @assignment.event.ends_at.strftime("%H:%M") %>
+        <% if @assignment.event.location.present? %> &middot; <%= @assignment.event.location %><% end %>
+      </p>
+    </div>
+  </header>
+
+  <section class="card entity-card">
+    <div class="card-body">
+      <dl class="row mb-0">
+        <dt class="col-sm-3">Departamento</dt>
+        <dd class="col-sm-9"><%= @assignment.event.department&.name || "Geral" %></dd>
+
+        <dt class="col-sm-3">Status</dt>
+        <dd class="col-sm-9"><%= @assignment.status.humanize %></dd>
+
+        <% if @assignment.response_at.present? %>
+          <dt class="col-sm-3">Respondido em</dt>
+          <dd class="col-sm-9"><%= @assignment.response_at.strftime("%d/%m/%Y %H:%M") %></dd>
+        <% end %>
+
+        <% if @assignment.decline_reason.present? %>
+          <dt class="col-sm-3">Motivo</dt>
+          <dd class="col-sm-9"><%= @assignment.decline_reason %></dd>
+        <% end %>
+      </dl>
+
+      <% if @assignment.pending? %>
+        <div class="border-top mt-4 pt-4">
+          <div class="d-flex flex-wrap gap-2 align-items-start">
+            <%= button_to "Confirmar presença", confirm_assignment_path(@assignment), method: :patch, class: "btn btn-success" %>
+
+            <%= form_with url: decline_assignment_path(@assignment), method: :patch, scope: :assignment, class: "assignment-response-form d-flex flex-wrap gap-2" do |form| %>
+              <%= form.text_field :decline_reason, class: "form-control", placeholder: "Motivo da recusa", required: true %>
+              <%= form.submit "Recusar", class: "btn btn-outline-danger" %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% end %>
