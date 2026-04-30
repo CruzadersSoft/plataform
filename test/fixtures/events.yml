@@ -18,7 +18,7 @@ worship_rehearsal:
   starts_at: <%= 3.days.from_now.beginning_of_day + 19.hours %>
   ends_at: <%= 3.days.from_now.beginning_of_day + 21.hours %>
   location: Sala de Louvor
-  status: draft
+  status: published
   created_by: 1
 
 hope_meeting:

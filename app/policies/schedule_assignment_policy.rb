@@ -19,6 +19,17 @@ class ScheduleAssignmentPolicy < ApplicationPolicy
     same_church? && own_assignment?
   end
 
+  def declined_replacements?
+    church_admin? || department_leader?
+  end
+
+  def replace?
+    same_church? &&
+      record.declined? &&
+      !record.replacement_resolved? &&
+      (church_admin? || event_policy.update?)
+  end
+
   class Scope < ApplicationPolicy::Scope
     def resolve
       return scope.none unless Current.church

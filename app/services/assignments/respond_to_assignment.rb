@@ -17,7 +17,7 @@ module Assignments
         decline_reason: @decline_reason
       )
 
-      if @assignment.save
+      if save_response
         ApplicationServiceResult.new(success: true, assignment: @assignment)
       else
         ApplicationServiceResult.new(success: false, assignment: @assignment, errors: @assignment.errors.full_messages)
@@ -28,6 +28,33 @@ module Assignments
 
     def failure(message)
       ApplicationServiceResult.new(success: false, assignment: @assignment, errors: [ message ])
+    end
+
+    def save_response
+      ActiveRecord::Base.transaction do
+        @assignment.save!
+        record_decline_activity! if @assignment.declined?
+      end
+
+      true
+    rescue ActiveRecord::RecordInvalid
+      false
+    end
+
+    def record_decline_activity!
+      result = Audit::RecordActivity.new(
+        church: @assignment.church,
+        actor: @actor,
+        entity: @assignment,
+        action: "assignment.declined",
+        metadata: {
+          event_id: @assignment.event_id,
+          event_requirement_id: @assignment.event_requirement_id,
+          decline_reason: @assignment.decline_reason
+        }
+      ).call
+
+      raise ActiveRecord::RecordInvalid, result.activity_log unless result.success?
     end
   end
 end

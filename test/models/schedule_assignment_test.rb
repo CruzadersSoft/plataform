@@ -90,4 +90,29 @@ class ScheduleAssignmentTest < ActiveSupport::TestCase
     assert_not assignment.valid?
     assert_includes assignment.errors[:user], "must be an active member of the church"
   end
+
+  test "marks declined assignment as replacement resolved when linked to a replacement" do
+    declined_assignment = schedule_assignments(:declined_sound)
+    replacement = churches(:grace).schedule_assignments.create!(
+      event: declined_assignment.event,
+      event_requirement: declined_assignment.event_requirement,
+      user: users(:one)
+    )
+
+    declined_assignment.update!(
+      replacement_assignment: replacement,
+      replacement_resolver: users(:one),
+      replacement_resolved_at: Time.current
+    )
+
+    assert declined_assignment.replacement_resolved?
+  end
+
+  test "validates replacement assignment belongs to same event and requirement" do
+    declined_assignment = schedule_assignments(:declined_sound)
+    declined_assignment.replacement_assignment = schedule_assignments(:pending_vocal)
+
+    assert_not declined_assignment.valid?
+    assert_includes declined_assignment.errors[:replacement_assignment], "must belong to the same event"
+  end
 end

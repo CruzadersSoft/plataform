@@ -21,10 +21,6 @@ class EventPolicy < ApplicationPolicy
     update?
   end
 
-  def publish?
-    update?
-  end
-
   class Scope < ApplicationPolicy::Scope
     def resolve
       return scope.none unless Current.church

@@ -427,7 +427,7 @@ dl.row dd {
 
 .dashboard-summary {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
   gap: 1rem;
   margin-bottom: 1rem;
 }
@@ -450,6 +450,11 @@ dl.row dd {
   color: $app-ink;
 }
 
+.dashboard-metric-warning {
+  border-color: rgba(177, 59, 46, 0.35);
+  background: #fff8f7;
+}
+
 .dashboard-metric-label {
   color: $app-muted;
   font-size: 0.85rem;
@@ -470,7 +475,7 @@ dl.row dd {
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
   gap: 1rem;
 }
 
@@ -534,6 +539,125 @@ dl.row dd {
   .form-control {
     width: min(11rem, 100%);
   }
+}
+
+.queue-summary {
+  display: grid;
+  min-width: 7rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(177, 59, 46, 0.25);
+  border-radius: var(--bs-border-radius-lg);
+  background: #fff8f7;
+  text-align: right;
+}
+
+.queue-summary-value {
+  color: #8f2f24;
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.queue-summary-label {
+  color: $app-muted;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.declined-queue {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.declined-queue-item {
+  display: grid;
+  grid-template-columns: minmax(6rem, 0.6fr) minmax(12rem, 1.5fr) minmax(12rem, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid rgba(215, 216, 209, 0.95);
+  border-radius: var(--bs-border-radius-lg);
+  background: #ffffff;
+  box-shadow: var(--bs-box-shadow-sm);
+}
+
+.declined-queue-status {
+  display: grid;
+  gap: 0.4rem;
+  justify-items: start;
+}
+
+.declined-queue-main {
+  min-width: 0;
+
+  h2 {
+    margin: 0 0 0.35rem;
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+
+  a {
+    color: $app-ink;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--bs-primary);
+    text-decoration: underline;
+  }
+}
+
+.declined-queue-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.75rem;
+  color: $app-muted;
+  font-size: 0.88rem;
+}
+
+.declined-queue-person {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+
+  div {
+    display: grid;
+    min-width: 0;
+  }
+
+  strong,
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  span:not(.member-avatar) {
+    color: $app-muted;
+    font-size: 0.88rem;
+  }
+}
+
+.declined-queue-actions {
+  justify-self: end;
+}
+
+.replacement-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 1rem;
+}
+
+.replacement-choice {
+  margin-bottom: 1rem;
+}
+
+.replacement-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.6rem;
 }
 
 // ── Auth Layout ───────────────────────────────────────────────────────────
@@ -609,8 +733,22 @@ dl.row dd {
   .mobile-only { display: block; }
 
   .dashboard-summary,
-  .dashboard-grid {
+  .dashboard-grid,
+  .replacement-layout {
     grid-template-columns: 1fr;
+  }
+
+  .declined-queue-item {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .declined-queue-actions {
+    justify-self: stretch;
+
+    .btn {
+      width: 100%;
+    }
   }
 
   .app-mobile-nav {

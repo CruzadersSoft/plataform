@@ -1,5 +1,5 @@
 class Church::EventsController < ApplicationController
-  before_action :set_event, only: %i[show edit update destroy publish]
+  before_action :set_event, only: %i[show edit update destroy]
 
   def index
     authorize Event
@@ -51,17 +51,6 @@ class Church::EventsController < ApplicationController
     authorize @event
     @event.cancelled!
     redirect_to events_path, notice: "Evento cancelado."
-  end
-
-  def publish
-    authorize @event, :publish?
-    result = Events::PublishEvent.new(event: @event, actor: Current.user).call
-
-    if result.success?
-      redirect_to event_path(@event), notice: "Evento publicado com sucesso."
-    else
-      redirect_to event_path(@event), alert: result.errors.to_sentence
-    end
   end
 
   private

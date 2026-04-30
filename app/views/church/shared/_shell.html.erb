@@ -1,4 +1,6 @@
 <% unread_notifications_count = Current.church.present? && current_user.present? ? Current.church.notifications.unread.where(user: current_user).count : 0 %>
+<% can_manage_declines = Current.church.present? && current_user.present? && policy(ScheduleAssignment).declined_replacements? %>
+<% declined_assignments_count = can_manage_declines ? policy_scope(ScheduleAssignment).unresolved_declines.count : 0 %>
 
 <div class="app-shell church-shell">
   <aside class="app-sidebar" aria-label="Menu principal">
@@ -23,6 +25,15 @@
         <%= link_to events_path, class: "app-nav-link #{'is-active' if active == :events}", aria: (active == :events ? { current: "page" } : nil) do %>
           <span class="app-nav-icon" aria-hidden="true">E</span>
           <span class="app-nav-text">Eventos</span>
+        <% end %>
+        <% if policy(ScheduleAssignment).declined_replacements? %>
+          <%= link_to declined_assignments_path, class: "app-nav-link #{'is-active' if active == :declined_assignments}", aria: (active == :declined_assignments ? { current: "page" } : nil) do %>
+            <span class="app-nav-icon" aria-hidden="true">R</span>
+            <span class="app-nav-text">Recusas</span>
+            <% if declined_assignments_count.positive? %>
+              <span class="app-nav-badge" data-testid="declined-assignments-count"><%= declined_assignments_count %></span>
+            <% end %>
+          <% end %>
         <% end %>
       <% end %>
       <%= link_to assignments_path, class: "app-nav-link #{'is-active' if active == :assignments}", aria: (active == :assignments ? { current: "page" } : nil) do %>
@@ -96,6 +107,17 @@
     <%= link_to events_path, class: "app-mobile-nav-link #{'is-active' if active == :events}", aria: (active == :events ? { current: "page" } : nil) do %>
       <span class="app-mobile-nav-icon" aria-hidden="true">E</span>
       Eventos
+    <% end %>
+    <% if policy(ScheduleAssignment).declined_replacements? %>
+      <%= link_to declined_assignments_path, class: "app-mobile-nav-link #{'is-active' if active == :declined_assignments}", aria: (active == :declined_assignments ? { current: "page" } : nil) do %>
+        <span class="app-mobile-nav-icon app-mobile-nav-icon-with-badge" aria-hidden="true">
+          R
+          <% if declined_assignments_count.positive? %>
+            <span class="app-mobile-nav-badge"><%= declined_assignments_count %></span>
+          <% end %>
+        </span>
+        Recusas
+      <% end %>
     <% end %>
   <% end %>
   <%= link_to assignments_path, class: "app-mobile-nav-link #{'is-active' if active == :assignments}", aria: (active == :assignments ? { current: "page" } : nil) do %>

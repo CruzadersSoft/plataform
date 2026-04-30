@@ -11,6 +11,8 @@ class HomeController < ApplicationController
     @recent_announcements = policy_scope(Announcement).order(created_at: :desc).limit(5)
     @unread_notifications = unread_notifications.limit(5)
     @unread_notifications_count = unread_notifications.count
+    @declined_assignments = declined_assignments.limit(5)
+    @declined_assignments_count = declined_assignments.count
   end
 
   private
@@ -27,5 +29,15 @@ class HomeController < ApplicationController
 
     def unread_notifications
       @church.notifications.unread.where(user: Current.user).order(created_at: :desc)
+    end
+
+    def declined_assignments
+      return ScheduleAssignment.none unless policy(ScheduleAssignment).declined_replacements?
+
+      policy_scope(ScheduleAssignment)
+        .unresolved_declines
+        .includes(:user, event: :department)
+        .joins(:event)
+        .order("events.starts_at ASC")
     end
 end

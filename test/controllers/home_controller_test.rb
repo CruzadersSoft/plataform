@@ -52,8 +52,10 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     get root_path
 
     assert_response :success
+    assert_select "[data-testid='dashboard-declined-assignments-count']", "1"
     assert_select "[data-testid='dashboard-pending-tasks-count']", "1"
     assert_select "[data-testid='dashboard-unread-notifications-count']", "0"
+    assert_select "a[href='#{declined_assignments_path}']", text: "Resolver", minimum: 1
     assert_select "a[href='#{tasks_path}']", text: "Tarefas", minimum: 1
     assert_select "a[href='#{announcements_path}']", text: "Comunicados", minimum: 1
     assert_select "a[href='#{notifications_path}']", text: "Notificações", minimum: 1
@@ -124,5 +126,6 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", "Grace Church"
     assert_select "[data-testid='current-church-role']", "Lider: Worship"
+    assert_select "[data-testid='dashboard-declined-assignments-count']", "1"
   end
 end

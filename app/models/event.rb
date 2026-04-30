@@ -6,7 +6,7 @@ class Event < ApplicationRecord
   has_many :event_requirements, dependent: :destroy
   has_many :schedule_assignments, dependent: :destroy
 
-  enum :status, { draft: 0, published: 1, cancelled: 2 }, default: :draft
+  enum :status, { published: 0, cancelled: 1 }, default: :published
   enum :event_type, { service: 0, rehearsal: 1, meeting: 2, other: 3 }
 
   validates :title, presence: true

@@ -10,7 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_29_100200) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_30_120200) do
+  create_table "activity_logs", force: :cascade do |t|
+    t.string "action", null: false
+    t.integer "actor_user_id", null: false
+    t.integer "church_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "entity_id", null: false
+    t.string "entity_type", null: false
+    t.string "ip_address"
+    t.json "metadata_json", default: {}, null: false
+    t.index ["actor_user_id"], name: "index_activity_logs_on_actor_user_id"
+    t.index ["church_id", "action", "created_at"], name: "index_activity_logs_on_church_id_and_action_and_created_at"
+    t.index ["church_id", "entity_type", "entity_id"], name: "index_activity_logs_on_church_id_and_entity_type_and_entity_id"
+    t.index ["church_id"], name: "index_activity_logs_on_church_id"
+  end
+
   create_table "announcements", force: :cascade do |t|
     t.integer "audience_type", default: 0, null: false
     t.text "body", null: false
@@ -156,6 +171,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_100200) do
     t.text "decline_reason"
     t.integer "event_id", null: false
     t.integer "event_requirement_id", null: false
+    t.integer "replacement_assignment_id"
+    t.datetime "replacement_resolved_at"
+    t.integer "replacement_resolved_by"
     t.datetime "response_at"
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
@@ -165,17 +183,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_100200) do
     t.index ["event_id"], name: "index_schedule_assignments_on_event_id"
     t.index ["event_requirement_id", "user_id"], name: "index_schedule_assignments_on_event_requirement_id_and_user_id", unique: true
     t.index ["event_requirement_id"], name: "index_schedule_assignments_on_event_requirement_id"
+    t.index ["replacement_assignment_id"], name: "index_schedule_assignments_on_replacement_assignment_id"
+    t.index ["replacement_resolved_by"], name: "index_schedule_assignments_on_replacement_resolved_by"
     t.index ["user_id"], name: "index_schedule_assignments_on_user_id"
   end
 
   create_table "skills", force: :cascade do |t|
-    t.boolean "active", default: true, null: false
+    t.boolean "active"
     t.integer "church_id", null: false
     t.datetime "created_at", null: false
     t.text "description"
-    t.string "name", null: false
+    t.string "name"
     t.datetime "updated_at", null: false
-    t.index ["church_id", "name"], name: "index_skills_on_church_id_and_name", unique: true
     t.index ["church_id"], name: "index_skills_on_church_id"
   end
 
@@ -200,13 +219,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_100200) do
   create_table "unavailabilities", force: :cascade do |t|
     t.integer "church_id", null: false
     t.datetime "created_at", null: false
-    t.datetime "ends_at", null: false
+    t.datetime "ends_at"
     t.string "reason"
-    t.datetime "starts_at", null: false
-    t.integer "status", default: 0, null: false
+    t.datetime "starts_at"
+    t.integer "status"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
-    t.index ["church_id", "user_id"], name: "index_unavailabilities_on_church_id_and_user_id"
     t.index ["church_id"], name: "index_unavailabilities_on_church_id"
     t.index ["user_id"], name: "index_unavailabilities_on_user_id"
   end
@@ -222,6 +240,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_100200) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "activity_logs", "churches"
+  add_foreign_key "activity_logs", "users", column: "actor_user_id"
   add_foreign_key "announcements", "churches"
   add_foreign_key "church_invitation_codes", "churches"
   add_foreign_key "church_invitation_codes", "users", column: "created_by_id"
@@ -242,7 +262,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_100200) do
   add_foreign_key "schedule_assignments", "churches"
   add_foreign_key "schedule_assignments", "event_requirements"
   add_foreign_key "schedule_assignments", "events"
+  add_foreign_key "schedule_assignments", "schedule_assignments", column: "replacement_assignment_id"
   add_foreign_key "schedule_assignments", "users"
+  add_foreign_key "schedule_assignments", "users", column: "replacement_resolved_by"
   add_foreign_key "skills", "churches"
   add_foreign_key "tasks", "churches"
   add_foreign_key "tasks", "departments"

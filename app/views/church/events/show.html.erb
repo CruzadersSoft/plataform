@@ -12,9 +12,6 @@
     <div class="d-flex gap-2">
       <% badge_class = @event.published? ? "text-bg-success" : (@event.cancelled? ? "text-bg-danger" : "text-bg-secondary") %>
       <span class="badge <%= badge_class %>"><%= @event.status.humanize %></span>
-      <% if policy(@event).publish? && !@event.published? && !@event.cancelled? %>
-        <%= button_to "Publicar", publish_event_path(@event), method: :patch, class: "btn btn-sm btn-success" %>
-      <% end %>
       <% if policy(@event).update? %>
         <%= link_to "Editar", edit_event_path(@event), class: "btn btn-sm btn-outline-primary" %>
       <% end %>
@@ -59,7 +56,10 @@
                 </div>
                 <div class="assignment-response-actions d-flex flex-wrap gap-1 align-items-center">
                   <% badge_class = a.confirmed? ? "text-bg-success" : (a.declined? ? "text-bg-danger" : "text-bg-warning") %>
-                  <span class="badge <%= badge_class %>"><%= a.status.humanize %></span>
+                  <span class="badge <%= badge_class %>"><%= a.replacement_resolved? ? "Recusada resolvida" : a.status.humanize %></span>
+                  <% if policy(a).replace? %>
+                    <%= link_to "Substituir", declined_assignment_path(a), class: "btn btn-sm btn-primary" %>
+                  <% end %>
                   <% if policy(a).destroy? %>
                     <%= button_to "Remover", event_assignment_path(@event, a), method: :delete, class: "btn btn-sm btn-outline-danger", data: { turbo_confirm: "Remover esta convocação?" } %>
                   <% end %>

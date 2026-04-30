@@ -5,6 +5,8 @@ class User < ApplicationRecord
   has_many :department_memberships, dependent: :destroy
   has_many :departments, through: :department_memberships
   has_many :created_church_invitation_codes, class_name: "ChurchInvitationCode", foreign_key: :created_by_id, dependent: :restrict_with_exception
+  has_many :resolved_replacement_assignments, class_name: "ScheduleAssignment", foreign_key: :replacement_resolved_by, dependent: :nullify
+  has_many :activity_logs, foreign_key: :actor_user_id, dependent: :restrict_with_exception
 
   enum :platform_role, { member: 0, platform_admin: 1 }
   enum :status, { active: 0, inactive: 1 }

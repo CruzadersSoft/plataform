@@ -24,6 +24,7 @@ class Church::AssignmentsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".app-sidebar a[href='#{root_path}']", count: 0
     assert_select ".app-sidebar a[href='#{departments_path}']", count: 0
     assert_select ".app-sidebar a[href='#{events_path}']", count: 0
+    assert_select ".app-sidebar a[href='#{declined_assignments_path}']", count: 0
     assert_select ".app-sidebar a[href='#{members_path}']", count: 0
   end
 
@@ -37,6 +38,7 @@ class Church::AssignmentsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".app-sidebar a[href='#{root_path}']", /Início/
     assert_select ".app-sidebar a[href='#{departments_path}']", /Departamentos/
     assert_select ".app-sidebar a[href='#{events_path}']", /Eventos/
+    assert_select ".app-sidebar a[href='#{declined_assignments_path}']", /Recusas/
     assert_select ".app-sidebar a[href='#{assignments_path}']", /Convocações/
   end
 

@@ -25,17 +25,11 @@ class EventTest < ActiveSupport::TestCase
     assert_includes event.errors[:ends_at], "must be after start time"
   end
 
-  test "defaults to draft status" do
+  test "defaults to published status" do
     event = Event.new(church: churches(:grace), title: "Culto", event_type: :service,
                       starts_at: 1.hour.from_now, ends_at: 2.hours.from_now)
 
-    assert event.draft?
-  end
-
-  test "can be published" do
-    events(:sunday_service).update!(status: :published)
-
-    assert events(:sunday_service).published?
+    assert event.published?
   end
 
   test "can be cancelled" do
