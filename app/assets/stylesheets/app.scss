@@ -541,6 +541,47 @@ dl.row dd {
   }
 }
 
+.leadership-invite {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(31, 111, 235, 0.2);
+  border-radius: var(--bs-border-radius);
+  background: #f7fbff;
+
+  > div {
+    display: grid;
+    gap: 0.15rem;
+    min-width: min(100%, 16rem);
+  }
+
+  strong {
+    color: $app-ink;
+    font-size: 0.92rem;
+  }
+
+  span {
+    color: $app-muted;
+    font-size: 0.84rem;
+  }
+}
+
+.leadership-invite-form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+
+  .form-select {
+    width: min(13rem, 100%);
+    min-height: 2.25rem;
+  }
+}
+
 .queue-summary {
   display: grid;
   min-width: 7rem;

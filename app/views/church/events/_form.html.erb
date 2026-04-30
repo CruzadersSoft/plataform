@@ -17,8 +17,8 @@
     <div class="col-sm-6">
       <%= f.label :department_id, "Departamento", class: "form-label" %>
       <%= f.select :department_id,
-          Current.church.departments.active.order(:name).map { |d| [d.name, d.id] },
-          { include_blank: "Geral (sem departamento)" },
+          @department_options.map { |d| [d.name, d.id] },
+          { include_blank: (Current.church_membership&.church_admin? ? "Geral (sem departamento)" : false) },
           class: "form-select" %>
     </div>
   </div>

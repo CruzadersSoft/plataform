@@ -4,7 +4,11 @@ class EventPolicy < ApplicationPolicy
   end
 
   def show?
-    same_church? && (church_admin? || manages_event_department? || participates_in_event_department?)
+    return false unless same_church?
+    return true if church_admin?
+    return manages_event_department? if department_leader?
+
+    participates_in_event_department?
   end
 
   def create?
@@ -28,6 +32,19 @@ class EventPolicy < ApplicationPolicy
       relation = scope.where(church: Current.church)
       return relation if Current.church_membership&.church_admin?
 
+      if department_leader?
+        return relation
+          .joins(department: :department_memberships)
+          .where(
+            department_memberships: {
+              user_id: user.id,
+              status: DepartmentMembership.statuses[:active],
+              department_role: DepartmentMembership.department_roles[:leader]
+            }
+          )
+          .distinct
+      end
+
       relation
         .left_outer_joins(department: :department_memberships)
         .where(
@@ -36,6 +53,15 @@ class EventPolicy < ApplicationPolicy
           DepartmentMembership.statuses[:active]
         )
         .distinct
+    end
+
+    private
+
+    def department_leader?
+      return false unless Current.church.present? && Current.church_membership&.active?
+      return true if Current.church_membership.department_leader?
+
+      user.department_memberships.active.leader.exists?(church: Current.church)
     end
   end
 

@@ -32,14 +32,37 @@
           <div class="collapse p-3 border-bottom" id="new-assignment-form">
             <%= form_with url: event_assignments_path(@event), method: :post, scope: :assignment do |f| %>
               <div class="mb-2">
-                <label class="form-label" for="assignment_user_ids">Voluntários</label>
+                <label class="form-label" for="assignment_user_ids">Voluntários disponíveis</label>
                 <select name="assignment[user_ids][]" id="assignment_user_ids" multiple class="form-select">
                   <% @available_memberships.each do |membership| %>
                     <option value="<%= membership.user_id %>"><%= membership.user.display_name %></option>
                   <% end %>
                 </select>
+                <div class="form-text">A lista padrão não inclui você nem admins da igreja.</div>
               </div>
               <%= f.submit "Convocar selecionados", class: "btn btn-sm btn-primary" %>
+            <% end %>
+
+            <% if @leadership_memberships.any? %>
+              <div class="leadership-invite">
+                <div>
+                  <strong>Convocar pastor/admin</strong>
+                  <span>Use esta ação quando a liderança também deve participar da escala.</span>
+                </div>
+                <%= form_with url: event_assignments_path(@event), method: :post, scope: :assignment, class: "leadership-invite-form" do |f| %>
+                  <% if @leadership_memberships.one? %>
+                    <%= f.hidden_field :leadership_user_id, value: @leadership_memberships.first.user_id %>
+                    <%= f.submit "Convocar #{@leadership_memberships.first.user.display_name}", class: "btn btn-sm btn-outline-primary" %>
+                  <% else %>
+                    <%= f.select :leadership_user_id,
+                      @leadership_memberships.map { |membership| [ membership.user.display_name, membership.user_id ] },
+                      { prompt: "Selecione" },
+                      class: "form-select form-select-sm",
+                      required: true %>
+                    <%= f.submit "Convocar", class: "btn btn-sm btn-outline-primary" %>
+                  <% end %>
+                <% end %>
+              </div>
             <% end %>
           </div>
         <% end %>
