@@ -1,7 +1,7 @@
 require "test_helper"
 
 class Events::CreateEventTest < ActiveSupport::TestCase
-  test "creates a draft event for the church" do
+  test "creates a published event for the church" do
     params = {
       title: "Culto de Louvor",
       event_type: :service,
@@ -14,7 +14,7 @@ class Events::CreateEventTest < ActiveSupport::TestCase
 
     assert result.success?
     assert_equal churches(:grace), result.event.church
-    assert result.event.draft?
+    assert result.event.published?
     assert_equal users(:one).id, result.event.created_by
   end
 

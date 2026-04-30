@@ -14,6 +14,13 @@
   </header>
 
   <section class="dashboard-summary" aria-label="Resumo operacional">
+    <% if policy(ScheduleAssignment).declined_replacements? %>
+      <%= link_to declined_assignments_path, class: "dashboard-metric dashboard-metric-warning" do %>
+        <span class="dashboard-metric-label">Recusas pendentes</span>
+        <strong class="dashboard-metric-value" data-testid="dashboard-declined-assignments-count"><%= @declined_assignments_count %></strong>
+      <% end %>
+    <% end %>
+
     <%= link_to tasks_path(status: :pending), class: "dashboard-metric" do %>
       <span class="dashboard-metric-label">Tarefas abertas</span>
       <strong class="dashboard-metric-value" data-testid="dashboard-pending-tasks-count"><%= @pending_tasks_count %></strong>
@@ -31,6 +38,39 @@
   </section>
 
   <section class="dashboard-grid" aria-label="Atalhos operacionais">
+    <% if policy(ScheduleAssignment).declined_replacements? %>
+      <article class="card dashboard-card">
+        <div class="card-body">
+          <div class="dashboard-card-header">
+            <div>
+              <h2 class="card-title h5">Recusas pendentes</h2>
+              <p class="entity-muted mb-0">Brechas abertas na escala.</p>
+            </div>
+            <%= link_to "Resolver", declined_assignments_path, class: "btn btn-sm btn-outline-primary" %>
+          </div>
+
+          <% if @declined_assignments.any? %>
+            <div class="dashboard-list">
+              <% @declined_assignments.each do |assignment| %>
+                <%= link_to declined_assignment_path(assignment), class: "dashboard-list-item" do %>
+                  <span>
+                    <strong><%= assignment.event.title %></strong>
+                    <span><%= assignment.user.display_name %> · <%= assignment.event.department&.name || "Geral" %></span>
+                  </span>
+                  <span class="badge text-bg-danger">Recusada</span>
+                <% end %>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="empty-state">
+              <strong>Nenhuma recusa pendente</strong>
+              <span>Quando uma convocação for recusada, ela aparecerá aqui.</span>
+            </div>
+          <% end %>
+        </div>
+      </article>
+    <% end %>
+
     <article class="card dashboard-card">
       <div class="card-body">
         <div class="dashboard-card-header">

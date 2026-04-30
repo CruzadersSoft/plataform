@@ -83,4 +83,29 @@ class ScheduleAssignmentPolicyTest < ActiveSupport::TestCase
 
     assert policy.respond?
   end
+
+  test "church admin can replace declined assignments" do
+    Current.church_membership = church_memberships(:grace_admin)
+    policy = ScheduleAssignmentPolicy.new(users(:one), schedule_assignments(:declined_sound))
+
+    assert policy.declined_replacements?
+    assert policy.replace?
+  end
+
+  test "department leader can replace declined assignments only in managed departments" do
+    Current.church_membership = church_memberships(:grace_admin)
+    church_memberships(:grace_admin).department_leader!
+    policy = ScheduleAssignmentPolicy.new(users(:one), schedule_assignments(:declined_sound))
+
+    assert policy.declined_replacements?
+    assert_not policy.replace?
+  end
+
+  test "volunteer cannot access declined replacement queue" do
+    Current.church_membership = church_memberships(:grace_volunteer)
+    policy = ScheduleAssignmentPolicy.new(users(:three), schedule_assignments(:declined_sound))
+
+    assert_not policy.declined_replacements?
+    assert_not policy.replace?
+  end
 end

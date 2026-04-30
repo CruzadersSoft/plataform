@@ -19,7 +19,6 @@ Rails.application.routes.draw do
     # Habilidades e vagas tecnicas nao sao expostas por enquanto.
     # EventRequirement permanece como detalhe interno para suportar convocacoes.
     resources :events do
-      member { patch :publish }
       resources :assignments, module: :events, only: %i[index create destroy] do
       end
     end
@@ -27,6 +26,11 @@ Rails.application.routes.draw do
       member do
         patch :confirm
         patch :decline
+      end
+    end
+    resources :declined_assignments, only: %i[index show] do
+      member do
+        patch :replace
       end
     end
     resources :unavailabilities, except: :show

@@ -1,0 +1,53 @@
+<%= render layout: "church/shared/shell", locals: { active: :declined_assignments } do %>
+  <header class="page-header entity-header">
+    <div>
+      <p class="page-eyebrow">Escalas</p>
+      <h1 class="page-title">Recusas pendentes</h1>
+      <p class="page-description">Convocações recusadas que ainda precisam de substituto.</p>
+    </div>
+
+    <div class="queue-summary" aria-label="Resumo da fila">
+      <span class="queue-summary-value"><%= @assignments.size %></span>
+      <span class="queue-summary-label">em aberto</span>
+    </div>
+  </header>
+
+  <section class="declined-queue" aria-label="Lista de recusas pendentes">
+    <% if @assignments.any? %>
+      <% @assignments.each do |assignment| %>
+        <article class="declined-queue-item" data-testid="declined-assignment-row">
+          <div class="declined-queue-status">
+            <span class="badge text-bg-danger">Recusada</span>
+            <span class="entity-muted"><%= assignment.response_at&.strftime("%d/%m %H:%M") %></span>
+          </div>
+
+          <div class="declined-queue-main">
+            <h2><%= link_to assignment.event.title, declined_assignment_path(assignment) %></h2>
+            <div class="declined-queue-meta">
+              <span><%= assignment.event.department&.name || "Geral" %></span>
+              <span><%= assignment.event_requirement.role_name %></span>
+              <span><%= assignment.event.starts_at.strftime("%d/%m/%Y %H:%M") %> até <%= assignment.event.ends_at.strftime("%H:%M") %></span>
+            </div>
+          </div>
+
+          <div class="declined-queue-person">
+            <span class="member-avatar"><%= assignment.user.display_name.first.upcase %></span>
+            <div>
+              <strong><%= assignment.user.display_name %></strong>
+              <span><%= assignment.decline_reason %></span>
+            </div>
+          </div>
+
+          <div class="declined-queue-actions">
+            <%= link_to "Substituir", declined_assignment_path(assignment), class: "btn btn-primary" %>
+          </div>
+        </article>
+      <% end %>
+    <% else %>
+      <div class="empty-state empty-state-large">
+        <strong>Nenhuma recusa pendente</strong>
+        <span>Quando alguém recusar uma convocação, a brecha aparecerá aqui.</span>
+      </div>
+    <% end %>
+  </section>
+<% end %>

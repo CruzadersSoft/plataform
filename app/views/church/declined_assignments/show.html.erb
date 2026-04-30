@@ -1,0 +1,78 @@
+<%= render layout: "church/shared/shell", locals: { active: :declined_assignments } do %>
+  <header class="page-header entity-header">
+    <div>
+      <p class="page-eyebrow"><%= link_to "Recusas pendentes", declined_assignments_path %> / <%= @assignment.event.title %></p>
+      <h1 class="page-title">Substituir voluntário</h1>
+      <p class="page-description">Escolha uma pessoa disponível para cobrir a vaga aberta.</p>
+    </div>
+
+    <span class="badge text-bg-danger">Recusa em aberto</span>
+  </header>
+
+  <div class="replacement-layout">
+    <div>
+      <section class="card entity-card">
+        <div class="card-header">
+          <h2 class="card-title h6 mb-0">Recusa</h2>
+        </div>
+        <div class="card-body">
+          <dl class="row mb-0">
+            <dt class="col-sm-4">Evento</dt>
+            <dd class="col-sm-8"><%= @assignment.event.title %></dd>
+
+            <dt class="col-sm-4">Voluntário</dt>
+            <dd class="col-sm-8"><%= @assignment.user.display_name %></dd>
+
+            <dt class="col-sm-4">Departamento</dt>
+            <dd class="col-sm-8"><%= @assignment.event.department&.name || "Geral" %></dd>
+
+            <dt class="col-sm-4">Função</dt>
+            <dd class="col-sm-8"><%= @assignment.event_requirement.role_name %></dd>
+
+            <dt class="col-sm-4">Data</dt>
+            <dd class="col-sm-8">
+              <%= @assignment.event.starts_at.strftime("%d/%m/%Y %H:%M") %>
+              até <%= @assignment.event.ends_at.strftime("%H:%M") %>
+            </dd>
+
+            <dt class="col-sm-4">Motivo</dt>
+            <dd class="col-sm-8"><%= @assignment.decline_reason %></dd>
+          </dl>
+        </div>
+      </section>
+    </div>
+
+    <div>
+      <section class="card entity-card">
+        <div class="card-header">
+          <h2 class="card-title h6 mb-0">Novo convocado</h2>
+        </div>
+        <div class="card-body">
+          <% if @available_memberships.any? %>
+            <%= form_with url: replace_declined_assignment_path(@assignment), method: :patch, scope: :assignment do |form| %>
+              <div class="replacement-choice">
+                <%= form.label :replacement_user_id, "Substituto", class: "form-label" %>
+                <%= form.select :replacement_user_id,
+                  @available_memberships.map { |membership| [ membership.user.display_name, membership.user_id ] },
+                  { prompt: "Selecione um voluntário" },
+                  class: "form-select",
+                  required: true %>
+                <div class="form-text">A nova convocação será criada como pendente para a pessoa escolhida.</div>
+              </div>
+
+              <div class="replacement-actions">
+                <%= link_to "Voltar", declined_assignments_path, class: "btn btn-outline-secondary" %>
+                <%= form.submit "Convocar substituto", class: "btn btn-primary" %>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="empty-state">
+              <strong>Nenhum substituto disponível</strong>
+              <span>Todos os membros ativos já estão convocados, indisponíveis ou com conflito de agenda.</span>
+            </div>
+          <% end %>
+        </div>
+      </section>
+    </div>
+  </div>
+<% end %>

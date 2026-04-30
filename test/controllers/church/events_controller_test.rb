@@ -53,7 +53,7 @@ class Church::EventsControllerTest < ActionDispatch::IntegrationTest
     event = Event.order(:created_at).last
     assert_redirected_to event_path(event)
     assert_equal churches(:grace), event.church
-    assert event.draft?
+    assert event.published?
   end
 
   test "event show renders volunteer invitation form" do
@@ -67,6 +67,15 @@ class Church::EventsControllerTest < ActionDispatch::IntegrationTest
     assert_select "select[name='assignment[user_ids][]']"
     assert_select "input[name='assignment[decline_reason]']", count: 0
     assert_select "form[action='#{confirm_assignment_path(schedule_assignments(:pending_vocal))}']", count: 0
+  end
+
+  test "event show offers replacement action for unresolved declines" do
+    sign_in_to_church_as users(:one), churches(:grace)
+
+    get event_path(events(:worship_rehearsal))
+
+    assert_response :success
+    assert_select "a[href='#{declined_assignment_path(schedule_assignments(:declined_sound))}']", text: "Substituir"
   end
 
   test "event invitation form shows email when volunteer has no name" do
@@ -151,15 +160,6 @@ class Church::EventsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "select[name='assignment[user_ids][]'] option", text: users(:three).display_name
-  end
-
-  test "church admin publishes an event" do
-    sign_in_to_church_as users(:one), churches(:grace)
-
-    patch publish_event_path(events(:worship_rehearsal))
-
-    assert_redirected_to event_path(events(:worship_rehearsal))
-    assert events(:worship_rehearsal).reload.published?
   end
 
   test "volunteer cannot create an event" do

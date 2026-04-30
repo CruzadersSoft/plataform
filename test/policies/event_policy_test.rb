@@ -9,7 +9,7 @@ class EventPolicyTest < ActiveSupport::TestCase
     Current.reset
   end
 
-  test "church admin can create, update, destroy and publish events" do
+  test "church admin can create, update and destroy events" do
     Current.church_membership = church_memberships(:grace_admin)
     policy = EventPolicy.new(users(:one), events(:sunday_service))
 
@@ -18,7 +18,6 @@ class EventPolicyTest < ActiveSupport::TestCase
     assert policy.create?
     assert policy.update?
     assert policy.destroy?
-    assert policy.publish?
   end
 
   test "volunteer can view events but not manage them" do
@@ -30,7 +29,6 @@ class EventPolicyTest < ActiveSupport::TestCase
     assert_not policy.create?
     assert_not policy.update?
     assert_not policy.destroy?
-    assert_not policy.publish?
   end
 
   test "department leader manages only events from departments they lead" do

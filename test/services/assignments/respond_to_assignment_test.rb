@@ -18,17 +18,21 @@ class Assignments::RespondToAssignmentTest < ActiveSupport::TestCase
   test "volunteer declines a pending assignment with reason" do
     assignment = schedule_assignments(:pending_vocal)
 
-    result = Assignments::RespondToAssignment.new(
-      assignment: assignment,
-      actor: assignment.user,
-      response: :declined,
-      decline_reason: "Compromisso familiar"
-    ).call
+    assert_difference "ActivityLog.count", 1 do
+      result = Assignments::RespondToAssignment.new(
+        assignment: assignment,
+        actor: assignment.user,
+        response: :declined,
+        decline_reason: "Compromisso familiar"
+      ).call
 
-    assert result.success?
+      assert result.success?
+    end
+
     assert assignment.reload.declined?
     assert_not_nil assignment.response_at
     assert_equal "Compromisso familiar", assignment.decline_reason
+    assert_equal "assignment.declined", ActivityLog.last.action
   end
 
   test "decline without reason returns failure" do
