@@ -35,6 +35,39 @@ class Church::EventsControllerTest < ActionDispatch::IntegrationTest
     assert_select "select[name='event[event_type]']"
   end
 
+  test "department leader sees only led department event options" do
+    church_memberships(:grace_volunteer).department_leader!
+    department_memberships(:worship_volunteer).leader!
+    sign_in_to_church_as users(:three), churches(:grace)
+
+    get new_event_path
+
+    assert_response :success
+    assert_select "select[name='event[department_id]'] option", text: departments(:worship).name
+    assert_select "select[name='event[department_id]'] option", text: departments(:welcome).name, count: 0
+    assert_select "select[name='event[department_id]'] option", text: "Geral (sem departamento)", count: 0
+  end
+
+  test "department leader lists only events from led departments" do
+    church_memberships(:grace_volunteer).department_leader!
+    department_memberships(:worship_volunteer).leader!
+    welcome_event = churches(:grace).events.create!(
+      department: departments(:welcome),
+      title: "Recepção especial",
+      event_type: :meeting,
+      starts_at: 4.days.from_now,
+      ends_at: 4.days.from_now + 1.hour
+    )
+    sign_in_to_church_as users(:three), churches(:grace)
+
+    get events_path
+
+    assert_response :success
+    assert_match events(:sunday_service).title, response.body
+    assert_match events(:worship_rehearsal).title, response.body
+    assert_no_match welcome_event.title, response.body
+  end
+
   test "church admin creates an event" do
     sign_in_to_church_as users(:one), churches(:grace)
 
@@ -56,6 +89,67 @@ class Church::EventsControllerTest < ActionDispatch::IntegrationTest
     assert event.published?
   end
 
+  test "department leader creates event only for led department" do
+    church_memberships(:grace_volunteer).department_leader!
+    department_memberships(:worship_volunteer).leader!
+    sign_in_to_church_as users(:three), churches(:grace)
+
+    assert_difference "Event.count", 1 do
+      post events_path, params: {
+        event: {
+          department_id: departments(:worship).id,
+          title: "Ensaio extra",
+          event_type: "rehearsal",
+          starts_at: 3.days.from_now.beginning_of_day + 19.hours,
+          ends_at: 3.days.from_now.beginning_of_day + 21.hours,
+          location: "Sede"
+        }
+      }
+    end
+
+    assert_redirected_to event_path(Event.order(:created_at).last)
+  end
+
+  test "department leader cannot create event for another department" do
+    church_memberships(:grace_volunteer).department_leader!
+    department_memberships(:worship_volunteer).leader!
+    sign_in_to_church_as users(:three), churches(:grace)
+
+    assert_no_difference "Event.count" do
+      post events_path, params: {
+        event: {
+          department_id: departments(:welcome).id,
+          title: "Recepção especial",
+          event_type: "meeting",
+          starts_at: 3.days.from_now.beginning_of_day + 19.hours,
+          ends_at: 3.days.from_now.beginning_of_day + 21.hours,
+          location: "Sede"
+        }
+      }
+    end
+
+    assert_redirected_to root_path
+  end
+
+  test "department leader cannot move event to another department" do
+    church_memberships(:grace_volunteer).department_leader!
+    department_memberships(:worship_volunteer).leader!
+    sign_in_to_church_as users(:three), churches(:grace)
+
+    patch event_path(events(:worship_rehearsal)), params: {
+      event: {
+        department_id: departments(:welcome).id,
+        title: events(:worship_rehearsal).title,
+        event_type: events(:worship_rehearsal).event_type,
+        starts_at: events(:worship_rehearsal).starts_at,
+        ends_at: events(:worship_rehearsal).ends_at
+      }
+    }
+
+    assert_redirected_to root_path
+    assert_equal departments(:worship), events(:worship_rehearsal).reload.department
+  end
+
   test "event show renders volunteer invitation form" do
     sign_in_to_church_as users(:one), churches(:grace)
 
@@ -65,8 +159,20 @@ class Church::EventsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h2", "Convocações"
     assert_select "h2", { text: "Vagas", count: 0 }
     assert_select "select[name='assignment[user_ids][]']"
+    assert_select "select[name='assignment[user_ids][]'] option", text: users(:platform_admin).display_name, count: 0
+    assert_select "input[name='assignment[leadership_user_id]']", minimum: 1
     assert_select "input[name='assignment[decline_reason]']", count: 0
     assert_select "form[action='#{confirm_assignment_path(schedule_assignments(:pending_vocal))}']", count: 0
+  end
+
+  test "event invitation form does not list the current leader in volunteer candidates" do
+    department_memberships(:worship_volunteer).leader!
+    sign_in_to_church_as users(:three), churches(:grace)
+
+    get event_path(events(:sunday_service))
+
+    assert_response :success
+    assert_select "select[name='assignment[user_ids][]'] option", text: users(:three).display_name, count: 0
   end
 
   test "event show offers replacement action for unresolved declines" do

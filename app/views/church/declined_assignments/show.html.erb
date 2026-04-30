@@ -57,7 +57,7 @@
                   { prompt: "Selecione um voluntário" },
                   class: "form-select",
                   required: true %>
-                <div class="form-text">A nova convocação será criada como pendente para a pessoa escolhida.</div>
+                <div class="form-text">A lista padrão não inclui você nem admins da igreja.</div>
               </div>
 
               <div class="replacement-actions">
@@ -67,8 +67,30 @@
             <% end %>
           <% else %>
             <div class="empty-state">
-              <strong>Nenhum substituto disponível</strong>
-              <span>Todos os membros ativos já estão convocados, indisponíveis ou com conflito de agenda.</span>
+              <strong>Nenhum voluntário operacional disponível</strong>
+              <span>Os voluntários elegíveis já estão convocados, indisponíveis ou com conflito de agenda.</span>
+            </div>
+          <% end %>
+
+          <% if @leadership_memberships.any? %>
+            <div class="leadership-invite mt-3">
+              <div>
+                <strong>Convocar pastor/admin</strong>
+                <span>Use esta ação quando a liderança deve cobrir a brecha.</span>
+              </div>
+              <%= form_with url: replace_declined_assignment_path(@assignment), method: :patch, scope: :assignment, class: "leadership-invite-form" do |form| %>
+                <% if @leadership_memberships.one? %>
+                  <%= form.hidden_field :leadership_user_id, value: @leadership_memberships.first.user_id %>
+                  <%= form.submit "Convocar #{@leadership_memberships.first.user.display_name}", class: "btn btn-sm btn-outline-primary" %>
+                <% else %>
+                  <%= form.select :leadership_user_id,
+                    @leadership_memberships.map { |membership| [ membership.user.display_name, membership.user_id ] },
+                    { prompt: "Selecione" },
+                    class: "form-select form-select-sm",
+                    required: true %>
+                  <%= form.submit "Convocar", class: "btn btn-sm btn-outline-primary" %>
+                <% end %>
+              <% end %>
             </div>
           <% end %>
         </div>

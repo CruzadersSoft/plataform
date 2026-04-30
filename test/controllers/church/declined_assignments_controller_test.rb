@@ -34,24 +34,36 @@ class Church::DeclinedAssignmentsControllerTest < ActionDispatch::IntegrationTes
   end
 
   test "church admin opens replacement screen" do
+    churches(:grace).church_memberships.create!(
+      user: users(:two),
+      church_role: :volunteer,
+      status: :active
+    )
     sign_in_to_church_as users(:one), churches(:grace)
 
     get declined_assignment_path(schedule_assignments(:declined_sound))
 
     assert_response :success
     assert_select "h1", "Substituir voluntário"
-    assert_select "select[name='assignment[replacement_user_id]'] option", text: users(:one).display_name
+    assert_select "select[name='assignment[replacement_user_id]'] option", text: users(:two).display_name
+    assert_select "select[name='assignment[replacement_user_id]'] option", text: users(:one).display_name, count: 0
+    assert_select "select[name='assignment[leadership_user_id]'] option", text: users(:one).display_name
   end
 
-  test "church admin replaces a declined assignment" do
+  test "church admin replaces a declined assignment with an operational volunteer" do
     declined_assignment = schedule_assignments(:declined_sound)
+    churches(:grace).church_memberships.create!(
+      user: users(:two),
+      church_role: :volunteer,
+      status: :active
+    )
     sign_in_to_church_as users(:one), churches(:grace)
 
     assert_difference "ScheduleAssignment.count", 1 do
       assert_difference "Notification.count", 1 do
         assert_difference "ActivityLog.count", 2 do
           patch replace_declined_assignment_path(declined_assignment), params: {
-            assignment: { replacement_user_id: users(:one).id }
+            assignment: { replacement_user_id: users(:two).id }
           }
         end
       end
@@ -59,7 +71,21 @@ class Church::DeclinedAssignmentsControllerTest < ActionDispatch::IntegrationTes
 
     assert_redirected_to declined_assignments_path
     assert declined_assignment.reload.replacement_resolved?
-    assert_equal users(:one), declined_assignment.replacement_assignment.user
+    assert_equal users(:two), declined_assignment.replacement_assignment.user
+  end
+
+  test "church admin explicitly replaces a decline with pastor admin" do
+    declined_assignment = schedule_assignments(:declined_sound)
+    sign_in_to_church_as users(:one), churches(:grace)
+
+    assert_difference "ScheduleAssignment.count", 1 do
+      patch replace_declined_assignment_path(declined_assignment), params: {
+        assignment: { leadership_user_id: users(:one).id }
+      }
+    end
+
+    assert_redirected_to declined_assignments_path
+    assert_equal users(:one), declined_assignment.reload.replacement_assignment.user
   end
 
   test "replacement requires selecting a substitute" do

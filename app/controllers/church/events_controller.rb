@@ -9,12 +9,14 @@ class Church::EventsController < ApplicationController
   def show
     authorize @event
     @assignments = @event.schedule_assignments.includes(:user, :event_requirement)
-    @available_memberships = available_memberships_for_event(@event)
+    @available_memberships = assignment_candidates.operational_memberships
+    @leadership_memberships = assignment_candidates.leadership_memberships
   end
 
   def new
     @event = Current.church.events.new
     authorize Event
+    set_department_options
   end
 
   def create
@@ -27,6 +29,7 @@ class Church::EventsController < ApplicationController
       redirect_to event_path(result.event), notice: "Evento criado com sucesso."
     else
       @event = result.event
+      set_department_options
       flash.now[:alert] = result.errors.to_sentence
       render :new, status: :unprocessable_entity
     end
@@ -34,14 +37,19 @@ class Church::EventsController < ApplicationController
 
   def edit
     authorize @event
+    set_department_options
   end
 
   def update
     authorize @event
 
-    if @event.update(event_params)
+    @event.assign_attributes(event_params)
+    authorize @event
+
+    if @event.save
       redirect_to event_path(@event), notice: "Evento atualizado com sucesso."
     else
+      set_department_options
       flash.now[:alert] = "Não foi possível atualizar o evento."
       render :edit, status: :unprocessable_entity
     end
@@ -63,31 +71,28 @@ class Church::EventsController < ApplicationController
     params.require(:event).permit(:title, :event_type, :starts_at, :ends_at, :location, :department_id, :notes)
   end
 
-  def available_memberships_for_event(event)
-    unavailable_user_ids = Current.church
-      .unavailabilities
-      .active
-      .where("starts_at < ? AND ends_at > ?", event.ends_at, event.starts_at)
-      .select(:user_id)
+  def assignment_candidates
+    ::Assignments::CandidatesQuery.new(church: Current.church, event: @event, actor: Current.user)
+  end
 
-    already_convoked_user_ids = event.schedule_assignments.select(:user_id)
-
-    conflicting_assignment_user_ids = Current.church
-      .schedule_assignments
-      .where.not(event: event)
-      .where.not(status: ScheduleAssignment.statuses[:declined])
-      .joins(:event)
-      .where("events.starts_at < ? AND events.ends_at > ?", event.ends_at, event.starts_at)
-      .select(:user_id)
-
-    Current.church
-      .church_memberships
-      .active
-      .where.not(user_id: unavailable_user_ids)
-      .where.not(user_id: already_convoked_user_ids)
-      .where.not(user_id: conflicting_assignment_user_ids)
-      .joins(:user)
-      .includes(:user)
-      .order(Arel.sql("LOWER(COALESCE(NULLIF(users.name, ''), users.email_address))"))
+  def set_department_options
+    @department_options =
+      if Current.church_membership&.church_admin?
+        Current.church.departments.active.order(:name)
+      else
+        Current.church
+          .departments
+          .active
+          .joins(:department_memberships)
+          .where(
+            department_memberships: {
+              user_id: Current.user.id,
+              status: DepartmentMembership.statuses[:active],
+              department_role: DepartmentMembership.department_roles[:leader]
+            }
+          )
+          .order(:name)
+          .distinct
+      end
   end
 end

@@ -32,10 +32,12 @@ class EventPolicyTest < ActiveSupport::TestCase
   end
 
   test "department leader manages only events from departments they lead" do
-    Current.church_membership = church_memberships(:grace_admin)
-    church_memberships(:grace_admin).department_leader!
+    Current.church_membership = church_memberships(:grace_volunteer)
+    church_memberships(:grace_volunteer).department_leader!
+    department_memberships(:worship_volunteer).leader!
 
-    led_event = EventPolicy.new(users(:one), Event.create!(
+    led_event = EventPolicy.new(users(:three), events(:worship_rehearsal))
+    other_event = EventPolicy.new(users(:three), Event.create!(
       church: churches(:grace),
       department: departments(:welcome),
       title: "Welcome Briefing",
@@ -43,30 +45,32 @@ class EventPolicyTest < ActiveSupport::TestCase
       starts_at: 2.days.from_now,
       ends_at: 2.days.from_now + 1.hour
     ))
-    other_event = EventPolicy.new(users(:one), events(:worship_rehearsal))
 
     assert led_event.update?
     assert_not other_event.update?
+    assert_not other_event.show?
   end
 
   test "department leader creates only events for departments they lead" do
-    Current.church_membership = church_memberships(:grace_admin)
-    church_memberships(:grace_admin).department_leader!
+    Current.church_membership = church_memberships(:grace_volunteer)
+    church_memberships(:grace_volunteer).department_leader!
+    department_memberships(:worship_volunteer).leader!
 
-    led_event = Event.new(church: churches(:grace), department: departments(:welcome))
-    other_event = Event.new(church: churches(:grace), department: departments(:worship))
+    led_event = Event.new(church: churches(:grace), department: departments(:worship))
+    other_event = Event.new(church: churches(:grace), department: departments(:welcome))
 
-    assert EventPolicy.new(users(:one), led_event).create?
-    assert_not EventPolicy.new(users(:one), other_event).create?
+    assert EventPolicy.new(users(:three), led_event).create?
+    assert_not EventPolicy.new(users(:three), other_event).create?
   end
 
   test "department leader cannot create general events without a department" do
-    Current.church_membership = church_memberships(:grace_admin)
-    church_memberships(:grace_admin).department_leader!
+    Current.church_membership = church_memberships(:grace_volunteer)
+    church_memberships(:grace_volunteer).department_leader!
+    department_memberships(:worship_volunteer).leader!
 
     general_event = Event.new(church: churches(:grace))
 
-    assert_not EventPolicy.new(users(:one), general_event).create?
+    assert_not EventPolicy.new(users(:three), general_event).create?
   end
 
   test "cannot access event from another church" do
@@ -82,6 +86,27 @@ class EventPolicyTest < ActiveSupport::TestCase
     scope = EventPolicy::Scope.new(users(:one), Event.all).resolve
 
     assert_includes scope, events(:sunday_service)
+    assert_not_includes scope, events(:hope_meeting)
+  end
+
+  test "scope returns only led department events for department leader" do
+    Current.church_membership = church_memberships(:grace_volunteer)
+    church_memberships(:grace_volunteer).department_leader!
+    department_memberships(:worship_volunteer).leader!
+    welcome_event = Event.create!(
+      church: churches(:grace),
+      department: departments(:welcome),
+      title: "Welcome Briefing",
+      event_type: :meeting,
+      starts_at: 2.days.from_now,
+      ends_at: 2.days.from_now + 1.hour
+    )
+
+    scope = EventPolicy::Scope.new(users(:three), Event.all).resolve
+
+    assert_includes scope, events(:sunday_service)
+    assert_includes scope, events(:worship_rehearsal)
+    assert_not_includes scope, welcome_event
     assert_not_includes scope, events(:hope_meeting)
   end
 end
